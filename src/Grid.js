@@ -47,7 +47,8 @@ export default class Grid {
 
             neighbors.push({node: neighbor, cost: offset.cost});
 
-            return neighbors;
         }
+
+        return neighbors;
     }
 }

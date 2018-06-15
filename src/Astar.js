@@ -64,5 +64,11 @@ function getOrDefault(map, node, dValue) {
 }
 
 function heuristic(a, b) {
-    return Math.sqrt(Math.pow((b.x - a.x), 2) + Math.pow((b.y - a.y), 2));
+    const dx = Math.abs(a.x - b.x);
+    const dy = Math.abs(a.y - b.y);
+    if (dx < dy) {
+        return dx * 1.5 + (dy - dx);
+    } else {
+        return dy * 1.5 + (dx - dy);
+    }
 }

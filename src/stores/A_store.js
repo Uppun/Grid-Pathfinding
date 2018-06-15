@@ -59,9 +59,9 @@ class PathfindStore extends ReduceStore {
             case ActionTypes.STEP: {
                 const path = [...state.path];
                 const nextLocation = path.shift();
-                
+                console.log(path)
                 let stage;
-                if (path.length <= 0) {
+                if (path.length > 0) {
                     stage = "STEP";
                 }
                 else {
