@@ -5,14 +5,6 @@ export default class Grid {
         this.height = 50;
         this.width = 50;
         this.grid = this.generateGrid();
-        this.offsets = [{coords: [-1, -1], cost: 1.5},
-                        {coords: [0, -1], cost: 1},
-                        {coords: [1, -1], cost: 1.5},
-                        {coords: [-1, 0], cost: 1},
-                        {coords: [1, 0], cost: 1},
-                        {coords: [-1, 1], cost: 1.5},
-                        {coords: [0, 1], cost: 1},
-                        {coords: [1, 1], cost: 1.5}]
     }
 
     generateGrid() {
@@ -29,26 +21,13 @@ export default class Grid {
         return grid;
     }
 
-    getNeighbors(cell) {
-        const neighbors = [];
-
-        for (const offset of this.offsets) {
-            const row = this.grid[cell.y + offset.coords[1]];
-
-            if (!row) {
-                continue;
+    getCell(x, y) {
+        if(this.grid[y]) {
+            if(this.grid[y][x]) {
+                return this.grid[y][x];
             }
-
-            const neighbor = row[cell.x + offset.coords[0]];
-
-            if (!neighbor || !neighbor.passable) {
-                continue;
-            }
-
-            neighbors.push({node: neighbor, cost: offset.cost});
-
         }
 
-        return neighbors;
+        return null;
     }
 }
