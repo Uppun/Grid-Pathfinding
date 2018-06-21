@@ -26,6 +26,12 @@ export default {
         });
     },
 
+    generate() {
+        Dispatcher.dispatch({
+            type: ActionTypes.GENERATE,
+        });
+    },
+
     pathfind() {
         Dispatcher.dispatch({
             type: ActionTypes.PATHFIND,

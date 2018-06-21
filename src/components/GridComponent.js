@@ -5,6 +5,7 @@ import Cell from './CellComponent';
 import GridActions from '../actions/GridActions';
 
 import '../main.css';
+import Grid from '../Grid';
 
 class PathfinderGrid extends Component {
     static getStores() {
@@ -39,6 +40,11 @@ class PathfinderGrid extends Component {
             }
         }
     }
+
+    handleGenerateClick = () => {
+        GridActions.generate();
+    }
+
     render() {
         const {player, pathGrid, end, stage} = this.state;
 
@@ -61,6 +67,7 @@ class PathfinderGrid extends Component {
                         </div>)}
                 </div>
                 <button onClick={this.handleClick}>{stage}</button>
+                <button onClick={this.handleGenerateClick}>Generate</button>
             </div>
         )
     }

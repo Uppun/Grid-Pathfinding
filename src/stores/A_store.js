@@ -3,6 +3,7 @@ import Dispatcher from '../Dispatcher';
 import ActionTypes from '../actions/ActionTypes';
 import Grid from '../Grid';
 import Astar from '../Astar';
+import mapGenerator from '../mapGenerator';
 
 const SIZE = 50; 
 
@@ -41,6 +42,15 @@ class PathfindStore extends ReduceStore {
                 }
 
                 return {...state, pathGrid};
+            }
+
+            case ActionTypes.GENERATE: {
+                const {player, end} = state;
+                
+                const pathGrid = mapGenerator(player, end, state.pathGrid);
+                const path = Astar(pathGrid.grid[player.y][player.x], pathGrid.grid[end.y][end.x]);
+
+                return {...state, pathGrid, path, stage: 'STEP'};
             }
             
             case ActionTypes.PATHFIND: {
