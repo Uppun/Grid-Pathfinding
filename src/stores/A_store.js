@@ -46,11 +46,11 @@ class PathfindStore extends ReduceStore {
 
             case ActionTypes.GENERATE: {
                 const {player, end} = state;
+                let pathGrid = new Grid();
                 
-                const pathGrid = mapGenerator(player, end, state.pathGrid);
-                const path = Astar(pathGrid.grid[player.y][player.x], pathGrid.grid[end.y][end.x]);
+                pathGrid = mapGenerator(player, end, pathGrid);
 
-                return {...state, pathGrid, path, stage: 'STEP'};
+                return {...state, pathGrid};
             }
             
             case ActionTypes.PATHFIND: {

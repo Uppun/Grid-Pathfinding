@@ -5,7 +5,6 @@ import Cell from './CellComponent';
 import GridActions from '../actions/GridActions';
 
 import '../main.css';
-import Grid from '../Grid';
 
 class PathfinderGrid extends Component {
     static getStores() {
@@ -48,6 +47,32 @@ class PathfinderGrid extends Component {
     render() {
         const {player, pathGrid, end, stage} = this.state;
 
+        const canGenerate = stage === 'PASS';
+        const stageButtonVisibility = stage === 'PASS' || stage === 'STEP' || stage === 'RESET';
+
+        let stageLabel = '';
+
+        switch (stage) {
+            case 'PASS': {
+                stageLabel = 'Pathfind';
+                break;
+            }
+
+            case 'STEP': {
+                stageLabel = 'Next Step';
+                break;
+            }
+
+            case 'RESET': {
+                stageLabel = 'Reset';
+                break;
+            }
+
+            default: {
+                break;
+            }
+        }
+
         return(
             <div>
                 <div className='Grid'>
@@ -66,8 +91,8 @@ class PathfinderGrid extends Component {
                             })}
                         </div>)}
                 </div>
-                <button onClick={this.handleClick}>{stage}</button>
-                <button onClick={this.handleGenerateClick}>Generate</button>
+                <button onClick={this.handleClick} style={{visibility: stageButtonVisibility ? 'visible' : 'hidden'}}>{stageLabel}</button>
+                <button onClick={this.handleGenerateClick} style={{visibility: canGenerate ? 'visible' : 'hidden'}}>Generate</button>
             </div>
         )
     }

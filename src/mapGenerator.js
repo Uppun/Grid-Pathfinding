@@ -35,7 +35,7 @@ export default function MapGenerator(start, goal, grid) {
         let isHoleSafe = true;
 
         for (let entry of borderIterator) {
-            if (!entry[0].passable) {
+            if (!entry[0].passable && Math.pow((entry[0].x - holeX), 2) + Math.pow((entry[0].y - holeY), 2) <= Math.pow(holeRadius, 2)) {
                 isHoleSafe = false;
                 break;
             }
