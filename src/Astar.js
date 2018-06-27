@@ -1,50 +1,40 @@
+import Heap from './Heap';
+
 export default function A_star(start, goal) {
     const closedSet = new Set();
-    const openSet = new Set([start]);
+    const openSet = new Heap();
     const cameFrom = new Map();
     const gScore = new Map();
-    const fScore = new Map();
 
+    openSet.insert({node: start, f: heuristic(start, goal)});
     gScore.set(start, 0);
-    fScore.set(start, heuristic(start, goal));
 
-    while (openSet.size > 0) {
-        let current;
-        for (const node of openSet) {
-            if (!current) {
-                current = node;
-                continue;
-            }
+    while (openSet.heap.length > 0) {
+        const current = openSet.extractRoot();
 
-            if (getOrDefault(fScore, current, Infinity) > getOrDefault(fScore, node, Infinity)) {
-                current = node;
-            }
+        if (current.node === goal) {
+            return reconstruct_path(cameFrom, current.node);
         }
 
-        if (current === goal) {
-            return reconstruct_path(cameFrom, current);
-        }
+        closedSet.add(current.node);
 
-        openSet.delete(current);
-        closedSet.add(current);
-
-        const neighbors = current.getNeighbors();
+        const neighbors = current.node.getNeighbors();
         for (const neighbor of neighbors) {
             if (closedSet.has(neighbor.node)) {
                 continue;
             }
 
-            openSet.add(neighbor.node);
+            openSet.insert({node: neighbor.node, f: Infinity});
 
-            const tentative_score = getOrDefault(gScore, current, Infinity) + neighbor.cost;
+            const tentative_score = getOrDefault(gScore, current.node, Infinity) + neighbor.cost;
 
             if(tentative_score >= getOrDefault(gScore, neighbor.node, Infinity)) {
                 continue;
             }
 
-            cameFrom.set(neighbor.node, current);
+            cameFrom.set(neighbor.node, current.node);
             gScore.set(neighbor.node, tentative_score);
-            fScore.set(neighbor.node, gScore.get(neighbor.node) + heuristic(neighbor.node, goal));
+            openSet.setFscore(neighbor.node, gScore.get(neighbor.node) + heuristic(neighbor.node, goal));
         }
     }
 }

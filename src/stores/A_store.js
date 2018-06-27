@@ -56,6 +56,7 @@ class PathfindStore extends ReduceStore {
             case ActionTypes.PATHFIND: {
                 const {pathGrid, player, end} = state;
                 const path = Astar(pathGrid.grid[player.y][player.x], pathGrid.grid[end.y][end.x]);
+                path.shift();
                 
                 return {...state, path, stage: 'STEP'};
             }

@@ -72,7 +72,6 @@ function shouldIContinue(grid) {
         }
     }
 
-    console.log(totalWalls);
     if (totalWalls === 0 || RNG_Selector > (totalWalls / (totalCells + 0.1))) {
         return true;
     }

@@ -50,28 +50,7 @@ class PathfinderGrid extends Component {
         const canGenerate = stage === 'PASS';
         const stageButtonVisibility = stage === 'PASS' || stage === 'STEP' || stage === 'RESET';
 
-        let stageLabel = '';
-
-        switch (stage) {
-            case 'PASS': {
-                stageLabel = 'Pathfind';
-                break;
-            }
-
-            case 'STEP': {
-                stageLabel = 'Next Step';
-                break;
-            }
-
-            case 'RESET': {
-                stageLabel = 'Reset';
-                break;
-            }
-
-            default: {
-                break;
-            }
-        }
+        const stageLabel = stage === 'PASS' ? 'Pathfind' : stage === 'STEP' ? 'Next Step' : 'Reset';
 
         return(
             <div>
@@ -91,8 +70,8 @@ class PathfinderGrid extends Component {
                             })}
                         </div>)}
                 </div>
-                <button onClick={this.handleClick} style={{visibility: stageButtonVisibility ? 'visible' : 'hidden'}}>{stageLabel}</button>
-                <button onClick={this.handleGenerateClick} style={{visibility: canGenerate ? 'visible' : 'hidden'}}>Generate</button>
+                {stageButtonVisibility ? <button onClick={this.handleClick}>{stageLabel}</button> : ''}
+                {canGenerate ? <button onClick={this.handleGenerateClick}>Generate</button> : ''}
             </div>
         )
     }
