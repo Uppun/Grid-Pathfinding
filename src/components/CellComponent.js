@@ -16,29 +16,13 @@ export default class Cell extends Component {
             GridActions.end(position.x, position.y);
         }
 
-        if (stage === 'PASS') {
+        if (stage === 'WALL') {
             GridActions.pass(position.x, position.y);
         }
     }
 
     render() {
-        let cellClasses = this.props.status ? 'cell passalbe' : 'cell impassable';
-        
-        switch(this.props.type) {
-            case 'player': {
-                cellClasses += ' player';
-                break;
-            }
-
-            case 'end': {
-                cellClasses += ' end';
-                break;
-            }
-
-            default: {
-                break;
-            }
-        }
+        let cellClasses = this.props.status ? (this.props.type === 'player' ? 'cell passalbe player' : 'cell passable end') : 'cell impassable';
 
         return(
             <div className={cellClasses} onClick={this.handleClick}/>

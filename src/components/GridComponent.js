@@ -19,7 +19,7 @@ class PathfinderGrid extends Component {
         const {stage} = this.state;
 
         switch (stage) {
-            case 'PASS': {
+            case 'WALL': {
                 GridActions.pathfind();
                 break;
             }
@@ -47,10 +47,10 @@ class PathfinderGrid extends Component {
     render() {
         const {player, pathGrid, end, stage} = this.state;
 
-        const canGenerate = stage === 'PASS';
-        const stageButtonVisibility = stage === 'PASS' || stage === 'STEP' || stage === 'RESET';
+        const canGenerate = stage === 'WALL';
+        const stageButtonVisibility = stage === 'WALL' || stage === 'STEP' || stage === 'RESET';
 
-        const stageLabel = stage === 'PASS' ? 'Pathfind' : stage === 'STEP' ? 'Next Step' : 'Reset';
+        const stageLabel = stage === 'WALL' ? 'Pathfind' : stage === 'STEP' ? 'Next Step' : 'Reset';
 
         return(
             <div>

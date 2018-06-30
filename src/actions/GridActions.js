@@ -20,7 +20,7 @@ export default {
 
     pass(x, y) {
         Dispatcher.dispatch({
-            type: ActionTypes.PASS,
+            type: ActionTypes.WALL,
             x,
             y,
         });
