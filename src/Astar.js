@@ -1,17 +1,17 @@
 import Heap from './Heap';
-import MapWithDefault from './MapWithDefault';
 
 export default function A_star(start, goal, heuristic) {
     const closedNodes = new Set();
     const openNodes = new Heap();
     const cameFrom = new Map();
-    const gScore = new MapWithDefault(Infinity);
+    const gScore = new Map();
 
-    openNodes.insert({node: start, f: heuristic(start, goal)});
+    openNodes.insert(start, heuristic(start, goal));
     gScore.set(start, 0);
 
     while (openNodes.getLength() > 0) {
-        const current = openNodes.extractRoot();
+        const root = openNodes.extractRoot();
+        const current = root.node;
 
         if (current === goal) {
             return reconstructPath(cameFrom, current);
@@ -26,9 +26,9 @@ export default function A_star(start, goal, heuristic) {
 
             openNodes.insert(neighbor.node, Infinity);
 
-            const tentativeScore = gScore.get(current) + neighbor.cost;
+            const tentativeScore = getOrDefault(gScore, current, Infinity) + neighbor.cost;
 
-            if (tentativeScore >= gScore.get(neighbor.node)) {
+            if (tentativeScore >= getOrDefault(gScore, neighbor.node, Infinity)) {
                 continue;
             }
 
@@ -37,6 +37,10 @@ export default function A_star(start, goal, heuristic) {
             openNodes.setFscore(neighbor.node, tentativeScore + heuristic(neighbor.node, goal));
         }
     }
+}
+
+function getOrDefault(map, node, dValue) {
+    return map.has(node) ? map.get(node) : dValue;
 }
 
 function reconstructPath(cameFrom, current) {

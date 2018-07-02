@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import GridActions from '../actions/GridActions';
 import classNames from 'classnames';
 
 import '../main.css';

@@ -49,7 +49,6 @@ class A_Store extends ReduceStore {
             case ActionTypes.GENERATE: {
                 const {player, end} = state;
                 const pathGrid = mapGenerator(player, end, new Grid(SIZE, SIZE));
-                console.log(pathGrid);
                 return {...state, pathGrid};
             }
             

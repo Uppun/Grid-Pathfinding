@@ -14,12 +14,12 @@ export default class Heap {
         this._nodeIndicies.delete(node.node);
         this.minHeapify(0);
 
-        return node.node; 
+        return node; 
     }
 
     setFscore(node, key) {
         const nodeIndex = this._nodeIndicies.get(node);
-        if (nodeIndex && nodeIndex != 0) {
+        if (nodeIndex && nodeIndex !== 0) {
             this.heap[nodeIndex].f = key;
         }
 

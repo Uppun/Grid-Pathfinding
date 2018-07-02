@@ -79,7 +79,6 @@ class PathfinderGrid extends Component {
         const {player, pathGrid, end, stage} = this.state;
 
         const canGenerate = stage === 'WALL';
-        const stageButtonVisibility = stage === 'WALL' || stage === 'STEP' || stage === 'RESET';
 
         const stageLabel = STAGE_LABELS[stage];
 
