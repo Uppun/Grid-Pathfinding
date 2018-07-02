@@ -1,24 +1,21 @@
 import Cell from './Cell';
 
 export default class Grid {
-    constructor() {
-        this.height = 50;
-        this.width = 50;
-        this.grid = this.generateGrid();
+    constructor(height, width) {
+        this.height = height;
+        this.width = width;
+        this._initializeGrid();
     }
 
-    generateGrid() {
-        const grid = [];
+    _initializeGrid() {
+        this.grid = [];
         for (let y = 0; y < this.height; y++) {
             const row = [];
             for (let x = 0; x < this.width; x++) {
-                const newCell = new Cell(x, y, this);
-                row.push(newCell);
+                row.push(new Cell(x, y, this));
             }
-            grid.push(row);
+            this.grid.push(row);
         }
-
-        return grid;
     }
 
     getCell(x, y) {

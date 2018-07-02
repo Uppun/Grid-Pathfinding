@@ -4,65 +4,65 @@ import ActionTypes from '../actions/ActionTypes';
 import Grid from '../Grid';
 import Astar from '../Astar';
 import mapGenerator from '../mapGenerator';
+import heuristic from '../heuristic';
 
 const SIZE = 50; 
 
-class PathfindStore extends ReduceStore {
+class A_Store extends ReduceStore {
     constructor() {
         super(Dispatcher);
     }
 
     getInitialState() {
-        const pathGrid = new Grid();
-        return {pathGrid, stage: 'STARTP', player: {x: -1, y: -1}, end: {x: -2, y: -2}};
+        const pathGrid = new Grid(SIZE, SIZE);
+        return {pathGrid, 
+                stage: 'STARTP', 
+                player: {x: -1, y: -1}, end: {x: -2, y: -2}};
     }
 
     reduce(state, action) {
-        switch(action.type) {
+        switch (action.type) {
             case ActionTypes.STARTP: {
                 return {...state, player: {x: action.x, y: action.y}, stage: 'ENDP'};
             }
 
             case ActionTypes.ENDP: {
-                return {...state, end: {x: action.x, y: action.y}, stage: 'PASS'};
+                return {...state, end: {x: action.x, y: action.y}, stage: 'WALL'};
             }
 
-            case ActionTypes.PASS: {
-                let pathGrid = new Grid();
+            case ActionTypes.WALL: {
+                const pathGrid = new Grid(SIZE, SIZE);
                 const {grid} = state.pathGrid;
-                for (let y = 0; y < SIZE; y++) {
-                    for (let x = 0; x < SIZE; x++) {
-                        if (action.x === x && action.y === y) {
-                            pathGrid.grid[y][x].passable = !grid[y][x].passable;
-                        }
-                        else {
-                            pathGrid.grid[y][x].passable = grid[y][x].passable;
-                        }
+                const {x, y} = action;
+
+                for (let i = 0; i < SIZE; i++) {
+                    for (let j = 0; j < SIZE; j++) {
+                        pathGrid.grid[i][j].passable = grid[i][j].passable;
                     }
                 }
+
+                pathGrid.grid[y][x].passable = !grid[y][x].passable;
 
                 return {...state, pathGrid};
             }
 
             case ActionTypes.GENERATE: {
                 const {player, end} = state;
-                let pathGrid = new Grid();
-                
-                pathGrid = mapGenerator(player, end, pathGrid);
-
+                const pathGrid = mapGenerator(player, end, new Grid(SIZE, SIZE));
+                console.log(pathGrid);
                 return {...state, pathGrid};
             }
             
             case ActionTypes.PATHFIND: {
                 const {pathGrid, player, end} = state;
-                const path = Astar(pathGrid.grid[player.y][player.x], pathGrid.grid[end.y][end.x]);
+                const path = Astar(pathGrid.grid[player.y][player.x], pathGrid.grid[end.y][end.x], heuristic);
                 path.shift();
                 
                 return {...state, path, stage: 'STEP'};
             }
 
             case ActionTypes.RESET: {
-                let pathGrid = new Grid();
+                const pathGrid = new Grid(SIZE, SIZE);
 
                 return {pathGrid, player: {x: -1, y: -1}, end: {x: -2, y: -2}, stage: 'STARTP', path: ''};
             }
@@ -71,13 +71,7 @@ class PathfindStore extends ReduceStore {
                 const path = [...state.path];
                 const nextLocation = path.shift();
 
-                let stage;
-                if (path.length > 0) {
-                    stage = "STEP";
-                }
-                else {
-                    stage = "RESET";
-                }
+                const stage = path.length > 0 ? "STEP" : "RESET";
                 return {...state, stage, path, player: {x: nextLocation.x, y: nextLocation.y}};
             }
 
@@ -88,4 +82,4 @@ class PathfindStore extends ReduceStore {
     }
 }
 
-export default new PathfindStore();
+export default new A_Store();

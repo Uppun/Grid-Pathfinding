@@ -1,31 +1,23 @@
 import React, {Component} from 'react';
 import GridActions from '../actions/GridActions';
+import classNames from 'classnames';
 
 import '../main.css';
 
 
 export default class Cell extends Component {
     
-    handleClick = () => {
-        const {stage, position} = this.props;
-        if (stage === 'STARTP') {
-            GridActions.start(position.x, position.y);
-        }
-
-        if (stage === 'ENDP') {
-            GridActions.end(position.x, position.y);
-        }
-
-        if (stage === 'WALL') {
-            GridActions.pass(position.x, position.y);
-        }
+    handleCellClick = () => {
+        const {handleClick, x, y} = this.props;
+        handleClick(x, y);
     }
 
     render() {
-        let cellClasses = this.props.status ? (this.props.type === 'player' ? 'cell passalbe player' : 'cell passable end') : 'cell impassable';
+        const {passable, type} = this.props; 
+        const cellClasses = classNames('cell', passable ? 'passable' : 'impassable', {player: type === 'player', end: type === 'end'});
 
-        return(
-            <div className={cellClasses} onClick={this.handleClick}/>
+        return (
+            <div className={cellClasses} onClick={this.handleCellClick} />
         )
     }
 }

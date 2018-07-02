@@ -1,68 +1,70 @@
-export default function MapGenerator(start, goal, grid) {
-    let digAHole = true;
-
-    while (digAHole) {
+export default function mapGenerator(start, goal, grid) {
+    const holeCoverage = Math.random() * .35 + .15;
+    let holeCount = 0;
+    while (holeCount < 2) {
         const holeY = Math.floor(Math.random() * grid.height);
         const holeX = Math.floor(Math.random() * grid.width);
         const holeRadius = Math.floor(Math.random() * 5 + 1);
 
-
-        if (Math.pow((start.x - holeX), 2) + Math.pow((start.y - holeY), 2) <= Math.pow(holeRadius, 2) || 
-            Math.pow((goal.x - holeX), 2) + Math.pow((goal.y - holeY), 2) <= Math.pow(holeRadius, 2) ||
-            holeX + holeRadius + 1 >= grid.width || holeX - holeRadius - 1 <= 0 ||
-            holeY + holeRadius + 1 >= grid.height || holeY - holeRadius - 1 <= 0) {
-            digAHole = shouldIContinue(grid);
+        if (pythagoreanComparison(start.x, holeX, start.y, holeY, holeRadius) || 
+            pythagoreanComparison(goal.x, holeX, goal.y, holeY, holeRadius)) {
             continue;
         }
 
-        const holeCells = new Set([]);
-        const borderCells = new Set([]);
+        const holeCells = new Set();
+        const borderCells = new Set();
 
         for (let y = holeY - holeRadius - 1; y <= holeY + holeRadius + 1; y++) {
-            for (let x = holeX - holeRadius - 1; x <= holeX + holeRadius + 1; x++) {
-                borderCells.add(grid.grid[y][x]);
+                for (let x = holeX - holeRadius - 1; x <= holeX + holeRadius + 1; x++) {
+                    const cell = grid.getCell(x, y);
+                    if (cell) {
+                        borderCells.add(cell);
+                    }
+                }
             }
-        }
 
         for (let y = holeY - holeRadius; y <= holeY + holeRadius; y++) {
             for (let x = holeX - holeRadius; x <= holeX + holeRadius; x++) {
-                holeCells.add(grid.grid[y][x]);
-                borderCells.delete(grid.grid[y][x]);
+                const cell = grid.getCell(x, y);
+                if (cell) {
+                    holeCells.add(grid.grid[y][x]);
+                    borderCells.delete(grid.grid[y][x]);
+                }
             }
         }
         
-        const borderIterator = borderCells.entries();
         let isHoleSafe = true;
+        console.log("Hole centered at " + holeX + ", " + holeY);
+        console.log(borderCells)
 
-        for (let entry of borderIterator) {
-            if (!entry[0].passable && Math.pow((entry[0].x - holeX), 2) + Math.pow((entry[0].y - holeY), 2) <= Math.pow(holeRadius, 2)) {
+        for (const entry of borderCells) {
+            if (!entry.passable && pythagoreanComparison(entry.x, holeX, entry.y, holeY, holeRadius + 1)) {
+                console.log("This is: " + grid.grid[entry.y][entry.x] + " and it is " + grid.grid[entry.y][entry.x].passable + " and it is at " + entry.x + " " + entry.y);
                 isHoleSafe = false;
                 break;
             }
         }
 
         if (!isHoleSafe) {
-            digAHole = shouldIContinue(grid);
             continue;
         }
 
-        const holeIterator = holeCells.entries();
 
-        for (let entry of holeIterator) {
-            if(Math.pow((entry[0].x - holeX), 2) + Math.pow((entry[0].y - holeY), 2) <= Math.pow(holeRadius, 2)) {
-                grid.grid[entry[0].y][entry[0].x].passable = false;
+        for (let entry of holeCells) {
+            if(pythagoreanComparison(entry.x, holeX, entry.y, holeY, holeRadius)) {
+                grid.getCell(entry.x, entry.y).passable = false;
             }
         }
 
-        digAHole = shouldIContinue(grid);
+        holeCount++;
     }
+
     return grid;
 }
 
-function shouldIContinue(grid) {
+function shouldIContinue(grid, holeCoverage) {
     let totalWalls = 0;
     const totalCells = grid.height * grid.width;
-    const RNG_Selector = Math.random();
 
     for (let y = 0; y < grid.height; y++) {
         for (let x = 0; x < grid.width; x++) {
@@ -72,10 +74,9 @@ function shouldIContinue(grid) {
         }
     }
 
-    if (totalWalls === 0 || RNG_Selector > (totalWalls / (totalCells + 0.1))) {
-        return true;
-    }
-    return false;
+    return totalWalls / totalCells < holeCoverage;
+}
 
-
+function pythagoreanComparison(xp, xc, yp, yc, r) {
+    return (xp - xc) * (xp - xc) + (yp - yc) * (yp - yc) <= r * r;
 }
