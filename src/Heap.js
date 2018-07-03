@@ -1,6 +1,6 @@
 export default class Heap {
     heap = [];
-    _nodeIndicies = new Map();
+    _nodeIndices = new Map();
 
     get length() {
         return this.heap.length;
@@ -11,15 +11,15 @@ export default class Heap {
 
         const node = this.heap.pop();
 
-        this._nodeIndicies.delete(node.node);
+        this._nodeIndices.delete(node.node);
         this.minHeapify(0);
 
         return node; 
     }
 
     setKey(node, key) {
-        const nodeIndex = this._nodeIndicies.get(node);
-        if (nodeIndex && nodeIndex !== 0) {
+        const nodeIndex = this._nodeIndices.get(node);
+        if (nodeIndex) {
             this.heap[nodeIndex].key = key;
         }
 
@@ -67,7 +67,7 @@ export default class Heap {
 
     insert(node, key) {
         this.heap.push({node, key});
-        this._nodeIndicies.set(node.node, this.heap.length - 1);
+        this._nodeIndices.set(node.node, this.heap.length - 1);
         this.checkHeap(this.heap.length - 1);
     }
 
@@ -83,8 +83,8 @@ export default class Heap {
         const temp = this.heap[a];
         this.heap[a] = this.heap[b];
         this.heap[b] = temp;
-        this._nodeIndicies.set(this.heap[a].node, a);
-        this._nodeIndicies.set(this.heap[b].node, b);
+        this._nodeIndices.set(this.heap[a].node, a);
+        this._nodeIndices.set(this.heap[b].node, b);
     }
 }
 

@@ -2,8 +2,8 @@ import Cell from './Cell';
 
 export default class Grid {
     constructor(width, height) {
-        this.height = height;
         this.width = width;
+        this.height = height;
         this._initializeGrid();
     }
 

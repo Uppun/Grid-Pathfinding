@@ -7,7 +7,7 @@ const neighborOffsets = [
     {coords: [-1, 1], cost: 1.5},
     {coords: [0, 1], cost: 1},
     {coords: [1, 1], cost: 1.5}
-    ];
+];
 
 export default class Cell {
     constructor(x, y, grid) {
