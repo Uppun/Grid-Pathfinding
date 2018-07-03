@@ -1,24 +1,33 @@
 import Cell from './Cell';
 
 export default class Grid {
-    constructor() {
-        this.height = 50;
-        this.width = 50;
-        this.grid = this.generateGrid();
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+        this._initializeGrid();
     }
 
-    generateGrid() {
-        const grid = [];
+    clone() {
+        const newGrid = new Grid(this.width, this.height);
+
+        for (let i = 0; i < this.height; i++) {
+            for (let j = 0; j < this.width  ; j++) {
+                newGrid.grid[i][j].passable = this.grid[i][j].passable;
+            }
+        }
+
+        return newGrid;
+    }
+
+    _initializeGrid() {
+        this.grid = [];
         for (let y = 0; y < this.height; y++) {
             const row = [];
             for (let x = 0; x < this.width; x++) {
-                const newCell = new Cell(x, y, this);
-                row.push(newCell);
+                row.push(new Cell(x, y, this));
             }
-            grid.push(row);
+            this.grid.push(row);
         }
-
-        return grid;
     }
 
     getCell(x, y) {

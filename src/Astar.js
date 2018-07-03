@@ -1,64 +1,54 @@
 import Heap from './Heap';
 
-export default function A_star(start, goal) {
-    const closedSet = new Set();
-    const openSet = new Heap();
+export default function A_star(start, goal, heuristic) {
+    const closedNodes = new Set();
+    const openNodes = new Heap();
     const cameFrom = new Map();
     const gScore = new Map();
 
-    openSet.insert({node: start, f: heuristic(start, goal)});
+    openNodes.insert(start, heuristic(start, goal));
     gScore.set(start, 0);
 
-    while (openSet.heap.length > 0) {
-        const current = openSet.extractRoot();
+    while (openNodes.length > 0) {
+        const root = openNodes.extractRoot();
+        const current = root.node;
 
-        if (current.node === goal) {
-            return reconstruct_path(cameFrom, current.node);
+        if (current === goal) {
+            return reconstructPath(cameFrom, current);
         }
 
-        closedSet.add(current.node);
+        closedNodes.add(current);
 
-        const neighbors = current.node.getNeighbors();
-        for (const neighbor of neighbors) {
-            if (closedSet.has(neighbor.node)) {
+        for (const neighbor of current.getNeighbors()) {
+            if (closedNodes.has(neighbor.node)) {
                 continue;
             }
 
-            openSet.insert({node: neighbor.node, f: Infinity});
+            openNodes.insert(neighbor.node, Infinity);
 
-            const tentative_score = getOrDefault(gScore, current.node, Infinity) + neighbor.cost;
+            const tentativeScore = getOrDefault(gScore, current, Infinity) + neighbor.cost;
 
-            if(tentative_score >= getOrDefault(gScore, neighbor.node, Infinity)) {
+            if (tentativeScore >= getOrDefault(gScore, neighbor.node, Infinity)) {
                 continue;
             }
 
-            cameFrom.set(neighbor.node, current.node);
-            gScore.set(neighbor.node, tentative_score);
-            openSet.setFscore(neighbor.node, gScore.get(neighbor.node) + heuristic(neighbor.node, goal));
+            cameFrom.set(neighbor.node, current);
+            gScore.set(neighbor.node, tentativeScore);
+            openNodes.setKey(neighbor.node, tentativeScore + heuristic(neighbor.node, goal));
         }
     }
-}
-
-function reconstruct_path(cameFrom, current) {
-    const total_path = [current];
-
-    while (cameFrom.has(current)) {
-        current = cameFrom.get(current);
-        total_path.unshift(current);
-    }
-    return total_path;
 }
 
 function getOrDefault(map, node, dValue) {
     return map.has(node) ? map.get(node) : dValue;
 }
 
-function heuristic(a, b) {
-    const dx = Math.abs(a.x - b.x);
-    const dy = Math.abs(a.y - b.y);
-    if (dx < dy) {
-        return dx * 1.5 + (dy - dx);
-    } else {
-        return dy * 1.5 + (dx - dy);
+function reconstructPath(cameFrom, current) {
+    const path = [current];
+
+    while (cameFrom.has(current)) {
+        current = cameFrom.get(current);
+        path.unshift(current);
     }
+    return path;
 }

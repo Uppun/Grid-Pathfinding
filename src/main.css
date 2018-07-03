@@ -1,9 +1,9 @@
-.Grid {
+.grid {
     display: flex;
     flex-direction: column;
 }
 
-.gridRow {
+.grid-row {
     display: flex;
     flex-direction: row;
 }
