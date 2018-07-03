@@ -8,16 +8,18 @@ import heuristic from '../heuristic';
 
 const SIZE = 50; 
 
-class A_Store extends ReduceStore {
+class A_store extends ReduceStore {
     constructor() {
         super(Dispatcher);
     }
 
     getInitialState() {
-        const pathGrid = new Grid(SIZE, SIZE);
-        return {pathGrid, 
-                stage: 'STARTP', 
-                player: {x: -1, y: -1}, end: {x: -2, y: -2}};
+        return {
+            pathGrid: new Grid(SIZE, SIZE),
+            stage: 'STARTP',
+            player: {x: -1, y: -1},
+            end: {x: -2, y: -2},
+        };
     }
 
     reduce(state, action) {
@@ -31,15 +33,9 @@ class A_Store extends ReduceStore {
             }
 
             case ActionTypes.WALL: {
-                const pathGrid = new Grid(SIZE, SIZE);
                 const {grid} = state.pathGrid;
                 const {x, y} = action;
-
-                for (let i = 0; i < SIZE; i++) {
-                    for (let j = 0; j < SIZE; j++) {
-                        pathGrid.grid[i][j].passable = grid[i][j].passable;
-                    }
-                }
+                const pathGrid = grid.clone();
 
                 pathGrid.grid[y][x].passable = !grid[y][x].passable;
 
@@ -61,16 +57,14 @@ class A_Store extends ReduceStore {
             }
 
             case ActionTypes.RESET: {
-                const pathGrid = new Grid(SIZE, SIZE);
-
-                return {pathGrid, player: {x: -1, y: -1}, end: {x: -2, y: -2}, stage: 'STARTP', path: ''};
+                return {pathGrid: new Grid(SIZE, SIZE), player: {x: -1, y: -1}, end: {x: -2, y: -2}, stage: 'STARTP', path: ''};
             }
 
             case ActionTypes.STEP: {
                 const path = [...state.path];
                 const nextLocation = path.shift();
 
-                const stage = path.length > 0 ? "STEP" : "RESET";
+                const stage = path.length > 0 ? 'STEP' : 'RESET';
                 return {...state, stage, path, player: {x: nextLocation.x, y: nextLocation.y}};
             }
 
@@ -81,4 +75,4 @@ class A_Store extends ReduceStore {
     }
 }
 
-export default new A_Store();
+export default new A_store();

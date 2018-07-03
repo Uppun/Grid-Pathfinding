@@ -1,7 +1,7 @@
 export default {
     STARTP: 'STARTP',
     ENDP: 'ENDP',
-    PASS: 'WALL',
+    WALL: 'WALL',
     GENERATE: 'GENERATE',
     PATHFIND: 'PATHFIND',
     RESET: 'RESET',

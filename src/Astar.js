@@ -9,7 +9,7 @@ export default function A_star(start, goal, heuristic) {
     openNodes.insert(start, heuristic(start, goal));
     gScore.set(start, 0);
 
-    while (openNodes.getLength() > 0) {
+    while (openNodes.length > 0) {
         const root = openNodes.extractRoot();
         const current = root.node;
 
@@ -34,7 +34,7 @@ export default function A_star(start, goal, heuristic) {
 
             cameFrom.set(neighbor.node, current);
             gScore.set(neighbor.node, tentativeScore);
-            openNodes.setFscore(neighbor.node, tentativeScore + heuristic(neighbor.node, goal));
+            openNodes.setKey(neighbor.node, tentativeScore + heuristic(neighbor.node, goal));
         }
     }
 }

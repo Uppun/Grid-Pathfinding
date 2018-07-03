@@ -1,10 +1,22 @@
 import Cell from './Cell';
 
 export default class Grid {
-    constructor(height, width) {
+    constructor(width, height) {
         this.height = height;
         this.width = width;
         this._initializeGrid();
+    }
+
+    clone() {
+        const newGrid = new Grid(this.width, this.height);
+
+        for (let i = 0; i < this.height; i++) {
+            for (let j = 0; j < this.width; j++) {
+                newGrid.grid[i][j].passable = this.grid[i][j].passable;
+            }
+        }
+
+        return newGrid;
     }
 
     _initializeGrid() {

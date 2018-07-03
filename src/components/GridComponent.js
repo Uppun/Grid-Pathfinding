@@ -3,7 +3,6 @@ import A_store from '../stores/A_store';
 import {Container} from 'flux/utils';
 import Cell from './CellComponent';
 import GridActions from '../actions/GridActions';
-
 import '../main.css';
 
 const STAGE_LABELS = {
@@ -54,17 +53,17 @@ class PathfinderGrid extends Component {
         const {stage} = this.state;
         
         switch (stage) {
-            case "STARTP": {
+            case 'STARTP': {
                 GridActions.start(x, y);
                 break;
             }
 
-            case "ENDP": {
+            case 'ENDP': {
                 GridActions.end(x, y);
                 break;
             }
 
-            case "WALL": {
+            case 'WALL': {
                 GridActions.pass(x, y);
                 break;
             }
@@ -88,8 +87,8 @@ class PathfinderGrid extends Component {
                     {pathGrid.grid.map((row, rowIndex) =>
                         <div className="grid-row" key={rowIndex}>
                             {row.map((cell, columnIndex) => {
-                                const type = player.y === rowIndex && player.x === columnIndex ? "player" :
-                                             end.y === rowIndex && end.x === columnIndex ? "end" : "normal";
+                                const type = player.y === rowIndex && player.x === columnIndex ? 'player' :
+                                             end.y === rowIndex && end.x === columnIndex ? 'end' : 'normal';
                                 return (<Cell passable={cell.passable} key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} />);
                             })}
                         </div>)}

@@ -2,7 +2,7 @@ export default class Heap {
     heap = [];
     _nodeIndicies = new Map();
 
-    getLength() {
+    get length() {
         return this.heap.length;
     }
 
@@ -17,10 +17,10 @@ export default class Heap {
         return node; 
     }
 
-    setFscore(node, key) {
+    setKey(node, key) {
         const nodeIndex = this._nodeIndicies.get(node);
         if (nodeIndex && nodeIndex !== 0) {
-            this.heap[nodeIndex].f = key;
+            this.heap[nodeIndex].key = key;
         }
 
         this.buildMinHeap();
@@ -35,11 +35,11 @@ export default class Heap {
         const leftChild = 2 * position + 1;
         const rightChild = 2 * position + 2;
             
-        if (leftChild <= this.heap.length - 1 && this.compare(this.heap[leftChild], this.heap[position]) < 0) {
+        if (leftChild < this.heap.length && this.compare(this.heap[leftChild], this.heap[position]) < 0) {
             smallest = leftChild;
         }
 
-        if (rightChild <= this.heap.length - 1 && this.compare(this.heap[rightChild], this.heap[smallest]) < 0) {
+        if (rightChild < this.heap.length && this.compare(this.heap[rightChild], this.heap[smallest]) < 0) {
             smallest = rightChild;
         }
             
@@ -58,23 +58,22 @@ export default class Heap {
         }
     }
 
-    heapCheck(length) {
-        if (length > 0) {
-            const position = Math.floor((length - 2) / 2);
+    checkHeap(position) {
+        while (position> 0) {
+            position = Math.floor((position - 2) / 2);
             this.minHeapify(position);
-            this.heapCheck(position);
         }
     }
 
-    insert(node, f) {
-        this.heap.push({node, f});
+    insert(node, key) {
+        this.heap.push({node, key});
         this._nodeIndicies.set(node.node, this.heap.length - 1);
-        this.heapCheck(this.heap.length - 1);
+        this.checkHeap(this.heap.length - 1);
     }
 
     compare(a, b) {
         if (a && b) {
-            return a.f - b.f;
+            return a.key - b.key;
         }
 
         return 0;
