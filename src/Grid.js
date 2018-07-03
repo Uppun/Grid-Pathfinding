@@ -11,7 +11,7 @@ export default class Grid {
         const newGrid = new Grid(this.width, this.height);
 
         for (let i = 0; i < this.height; i++) {
-            for (let j = 0; j < this.width; j++) {
+            for (let j = 0; j < this.width  ; j++) {
                 newGrid.grid[i][j].passable = this.grid[i][j].passable;
             }
         }

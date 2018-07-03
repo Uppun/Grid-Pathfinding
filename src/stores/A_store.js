@@ -33,11 +33,11 @@ class A_store extends ReduceStore {
             }
 
             case ActionTypes.WALL: {
-                const {grid} = state.pathGrid;
                 const {x, y} = action;
-                const pathGrid = grid.clone();
+                const pathGrid = state.pathGrid.clone();
+                const cell = pathGrid.getCell(x, y);
 
-                pathGrid.grid[y][x].passable = !grid[y][x].passable;
+                cell.passable = !cell.passable;
 
                 return {...state, pathGrid};
             }
@@ -50,7 +50,10 @@ class A_store extends ReduceStore {
             
             case ActionTypes.PATHFIND: {
                 const {pathGrid, player, end} = state;
-                const path = Astar(pathGrid.grid[player.y][player.x], pathGrid.grid[end.y][end.x], heuristic);
+                const start = pathGrid.getCell(player.x, player.y);
+                const goal = pathGrid.getCell(end.x, end.y);
+
+                const path = Astar(start, goal, heuristic);
                 path.shift();
                 
                 return {...state, path, stage: 'STEP'};
