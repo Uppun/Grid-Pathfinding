@@ -19,7 +19,7 @@ export default class Heap {
 
     setKey(node, key) {
         const nodeIndex = this._nodeIndices.get(node);
-        if (nodeIndex !== null) {
+        if (nodeIndex != null) {
             this.heap[nodeIndex].key = key;
         }
 
