@@ -15,6 +15,27 @@ export default class Cell {
         this.y = y;
         this.grid = grid;
         this.passable = true;
+        this.terrain = 'normal';
+    }
+
+    static heuristic(a, b) {
+        const dx = Math.abs(a.x - b.x);
+        const dy = Math.abs(a.y - b.y);
+        let terrainCost = 0;
+    
+        if (a.terrain !== b.terrain) {
+            if (a.terrain === 'normal') {
+                terrainCost = 2; 
+            } else {
+                terrainCost = -.75;
+            }
+        }
+    
+        if (dx < dy) {
+            return dx * 1.5 + (dy - dx) + terrainCost;
+        } else {
+            return dy * 1.5 + (dx - dy) + terrainCost;
+        }
     }
 
     getNeighbors() {
@@ -27,7 +48,17 @@ export default class Cell {
                 continue;
             }
 
-            neighbors.push({node: neighbor, cost: offset.cost});
+            let cost = offset.cost;
+
+            if (neighbor.terrain !== this.terrain) {
+                if (neighbor.terrain === 'normal') {
+                    cost = offset.cost * 0.5;
+                } else {
+                    cost = offset.cost * 3;
+                }
+            }
+
+            neighbors.push({node: neighbor, cost});
         }
 
         return neighbors;

@@ -12,8 +12,12 @@ export default class Cell extends Component {
     }
 
     render() {
-        const {passable, type} = this.props; 
-        const cellClasses = classNames('cell', passable ? 'passable' : 'impassable', {player: type === 'player', end: type === 'end'});
+        const {passable, type, terrain} = this.props; 
+        const cellClasses = classNames(
+            'cell', passable ? 'passable' : 'impassable', 
+            {player: type === 'player', end: type === 'end'}, 
+            {mountain: terrain === 'mountain' && type === 'normal' && passable}
+        );
 
         return (
             <div className={cellClasses} onClick={this.handleCellClick} />
