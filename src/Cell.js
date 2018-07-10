@@ -15,7 +15,12 @@ export default class Cell {
         this.y = y;
         this.grid = grid;
         this.passable = true;
-        this.terrain = 'normal';
+        this.terrain = Cell.Terrain.NORMAL;
+    }
+
+    static Terrain = {
+        NORMAL: 'normal',
+        MOUNTAIN: 'mountain',
     }
 
     static heuristic(a, b) {
@@ -24,7 +29,7 @@ export default class Cell {
         let terrainCost = 0;
     
         if (a.terrain !== b.terrain) {
-            if (a.terrain === 'normal') {
+            if (a.terrain === Cell.Terrain.NORMAL) {
                 terrainCost = 2; 
             } else {
                 terrainCost = -.75;
@@ -51,7 +56,7 @@ export default class Cell {
             let cost = offset.cost;
 
             if (neighbor.terrain !== this.terrain) {
-                if (neighbor.terrain === 'normal') {
+                if (neighbor.terrain === Cell.Terrain.NORMAL) {
                     cost = offset.cost * 0.5;
                 } else {
                     cost = offset.cost * 3;

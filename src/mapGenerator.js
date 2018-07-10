@@ -1,3 +1,5 @@
+import Cell from './Cell';
+
 export default function mapGenerator(start, goal, grid) {
     const holeCoverage = Math.random() * .35 + .15;
     const mountainCoverage = Math.random() * .1 + .3;
@@ -21,11 +23,9 @@ export default function mapGenerator(start, goal, grid) {
         }
 
         for (const cell of mountainCells) {
-            cell.terrain = 'mountain';
+            cell.terrain = Cell.Terrain.MOUNTAIN;
         }
     }
-
-    console.log("I got here")
 
     while (shouldContinue(grid, holeCoverage, calculateWalls)) {
         const holeY = Math.floor(Math.random() * grid.height);
@@ -87,7 +87,7 @@ function calculateMountains(grid) {
 
     for (let y = 0; y < grid.height; y++) {
         for (let x = 0; x < grid.width; x++) {
-            if (grid.grid[y][x].terrain === 'mountain') {
+            if (grid.grid[y][x].terrain === Cell.Terrain.MOUNTAIN) {
                 totalMountains++;
             }
         }

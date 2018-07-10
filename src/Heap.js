@@ -11,7 +11,7 @@ export default class Heap {
 
         const node = this.heap.pop();
 
-        this._nodeIndices.delete(node.node);
+        this._nodeIndices.delete(node);
         this.minHeapify(0);
 
         return node; 
@@ -67,7 +67,7 @@ export default class Heap {
 
     insert(node, key) {
         this.heap.push({node, key});
-        this._nodeIndices.set(node.node, this.heap.length - 1);
+        this._nodeIndices.set(node, this.heap.length - 1);
         this.checkHeap(this.heap.length - 1);
     }
 

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
-
+import Cell from '../Cell';
 import '../main.css';
 
 
-export default class Cell extends Component {
+export default class CellComponent extends Component {
     
     handleCellClick = () => {
         const {handleClick, x, y} = this.props;
@@ -12,11 +12,11 @@ export default class Cell extends Component {
     }
 
     render() {
-        const {passable, type, terrain} = this.props; 
+        const {passable, type, terrain} = this.props;
         const cellClasses = classNames(
             'cell', passable ? 'passable' : 'impassable', 
             {player: type === 'player', end: type === 'end'}, 
-            {mountain: terrain === 'mountain' && type === 'normal' && passable}
+            {mountain: terrain === Cell.Terrain.MOUNTAIN && type === Cell.Terrain.NORMAL && passable}
         );
 
         return (
