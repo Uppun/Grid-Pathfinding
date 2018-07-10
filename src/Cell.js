@@ -9,6 +9,9 @@ const neighborOffsets = [
     {coords: [1, 1], cost: 1.5}
 ];
 
+const NORMAL_TO_MOUNTAIN_COST_MULTIPLIER = 3;
+const MOUNTAIN_TO_NORMAL_COST_MULTIPLIER = .5;
+
 export default class Cell {
     constructor(x, y, grid) {
         this.x = x;
@@ -26,20 +29,24 @@ export default class Cell {
     static heuristic(a, b) {
         const dx = Math.abs(a.x - b.x);
         const dy = Math.abs(a.y - b.y);
-        let terrainCost = 0;
+
+        const diagonal = Math.min(dx, dy);
+        const straight = Math.max(dx, dy) - diagonal;
     
-        if (a.terrain !== b.terrain) {
-            if (a.terrain === Cell.Terrain.NORMAL) {
-                terrainCost = 2; 
+        if (a.terrain === 'normal' && b.terrain === 'mountain') {
+            if (diagonal > 0) {
+                return (diagonal - 1) * 1.5 + (straight + 1 + NORMAL_TO_MOUNTAIN_COST_MULTIPLIER);
             } else {
-                terrainCost = -.75;
+                return (straight - 1) + NORMAL_TO_MOUNTAIN_COST_MULTIPLIER;
             }
-        }
-    
-        if (dx < dy) {
-            return dx * 1.5 + (dy - dx) + terrainCost;
+        } else if (a.terrain === 'mountain' && b.terrain === 'normal') {
+            if (diagonal > 0) {
+                return (diagonal - 1 + 1.5 * MOUNTAIN_TO_NORMAL_COST_MULTIPLIER) + straight;
+            } else {
+                return (straight - 1) + MOUNTAIN_TO_NORMAL_COST_MULTIPLIER;
+            }
         } else {
-            return dy * 1.5 + (dx - dy) + terrainCost;
+            return diagonal * 1.5 + straight;
         }
     }
 
