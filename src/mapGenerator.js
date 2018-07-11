@@ -37,6 +37,13 @@ export default function mapGenerator(start, goal, grid) {
             continue;
         }
 
+        if ((holeX + holeRadius >= grid.width - 1 && holeY + holeRadius >= grid.height - 1) ||
+            (holeX + holeRadius >= grid.width - 1 && holeY - holeRadius <= 0) ||
+            (holeX - holeRadius <= 0 && holeY + holeRadius >= grid.height - 1) ||
+            (holeX + holeRadius <= 0 && holeY - holeRadius <= 0)) {
+                continue;
+            }
+
         const holeCells = new Set();
         const borderCells = new Set();
 
