@@ -37,10 +37,12 @@ export default function mapGenerator(start, goal, grid) {
             continue;
         }
 
-        if ((holeX + holeRadius >= grid.width - 1 && holeY + holeRadius >= grid.height - 1) ||
-            (holeX + holeRadius >= grid.width - 1 && holeY - holeRadius <= 0) ||
-            (holeX - holeRadius <= 0 && holeY + holeRadius >= grid.height - 1) ||
-            (holeX + holeRadius <= 0 && holeY - holeRadius <= 0)) {
+        const touchesRight = holeX + holeRadius >= grid.width - 1;
+        const touchesLeft = holeX - holeRadius <= 0;
+        const touchesBottom = holeY + holeRadius >= grid.height - 1;
+        const touchesTop = holeY - holeRadius <= 0;
+
+        if ((touchesRight && touchesBottom) || (touchesRight && touchesTop) || (touchesLeft && touchesBottom) || (touchesLeft && touchesTop)) {
                 continue;
             }
 
