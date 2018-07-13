@@ -2,9 +2,9 @@ import {ReduceStore} from 'flux/utils';
 import Dispatcher from '../Dispatcher';
 import ActionTypes from '../actions/ActionTypes';
 import Grid from '../Grid';
+import Cell from '../Cell';
 import Astar from '../Astar';
 import mapGenerator from '../mapGenerator';
-import heuristic from '../heuristic';
 
 const SIZE = 50; 
 
@@ -53,7 +53,7 @@ class A_store extends ReduceStore {
                 const start = pathGrid.getCell(player.x, player.y);
                 const goal = pathGrid.getCell(end.x, end.y);
 
-                const path = Astar(start, goal, heuristic);
+                const path = Astar(start, goal, Cell.heuristic);
                 path.shift();
                 
                 return {...state, path, stage: 'STEP'};

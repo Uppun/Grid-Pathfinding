@@ -93,7 +93,7 @@ class PathfinderGrid extends Component {
                                 } else if (end.y === rowIndex && end.x === columnIndex) {
                                   type = 'end';
                                 }
-                                return (<Cell passable={cell.passable} key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} />);
+                                return (<Cell passable={cell.passable} key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} />);
                             })}
                         </div>)}
                 </div>
