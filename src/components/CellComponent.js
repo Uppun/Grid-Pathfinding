@@ -12,11 +12,12 @@ export default class CellComponent extends Component {
     }
 
     render() {
-        const {passable, type, terrain} = this.props;
+        const {passable, type, terrain, fogVisibility} = this.props;
         const cellClasses = classNames(
             'cell', passable ? 'passable' : 'impassable', 
             {player: type === 'player', end: type === 'end'}, 
-            {mountain: terrain === Cell.Terrain.MOUNTAIN && type === Cell.Terrain.NORMAL && passable}
+            {mountain: terrain === Cell.Terrain.MOUNTAIN && type === Cell.Terrain.NORMAL && passable},
+            {seen: fogVisibility === Cell.fogVisibilityLevels.SEEN, unknown: fogVisibility === Cell.fogVisibilityLevels.UNKNOWN}
         );
 
         return (

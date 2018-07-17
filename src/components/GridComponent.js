@@ -9,6 +9,7 @@ const STAGE_LABELS = {
     WALL: 'Pathfind',
     STEP: 'Next Step',
     RESET: 'Reset',
+    STEP_FOG: 'Next Step',
   };
 
 class PathfinderGrid extends Component {
@@ -39,6 +40,11 @@ class PathfinderGrid extends Component {
                 break;
             }
 
+            case 'STEP_FOG': {
+                GridActions.stepFog();
+                break;
+            }
+
             default: {
                 break;
             }
@@ -47,6 +53,10 @@ class PathfinderGrid extends Component {
 
     handleGenerateClick() {
         GridActions.generate();
+    }
+
+    handleGenerateFogClick() {
+        GridActions.generateFog();
     }
 
     handleCellClick = (x, y) => {
@@ -93,12 +103,13 @@ class PathfinderGrid extends Component {
                                 } else if (end.y === rowIndex && end.x === columnIndex) {
                                   type = 'end';
                                 }
-                                return (<Cell passable={cell.passable} key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} />);
+                                return (<Cell passable={cell.passable} key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} fogVisibility={cell.fogVisibility}/>);
                             })}
                         </div>)}
                 </div>
                 {stageLabel ? <button onClick={this.handleClick}>{stageLabel}</button> : null}
                 {canGenerate ? <button onClick={this.handleGenerateClick}>Generate</button> : null}
+                {canGenerate ? <button onClick={this.handleGenerateFogClick}>Generate Fog Map</button> : null}
             </div>
         )
     }

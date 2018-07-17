@@ -19,6 +19,13 @@ export default class Cell {
         this.grid = grid;
         this.passable = true;
         this.terrain = Cell.Terrain.NORMAL;
+        this.fogVisibility = Cell.fogVisibilityLevels.VISIBLE;
+    }
+
+    static fogVisibilityLevels = {
+        VISIBLE: 'visible',
+        SEEN: 'seen',
+        UNKNOWN: 'unknown',
     }
 
     static Terrain = {

@@ -71,6 +71,46 @@ class A_store extends ReduceStore {
                 return {...state, stage, path, player: {x: nextLocation.x, y: nextLocation.y}};
             }
 
+            case ActionTypes.GENERATE_FOG: {
+                const {player, end} = state;
+                const {x, y} = player;
+                const revealedGrid = mapGenerator(player, end, new Grid(SIZE, SIZE));
+                const visibilityMap = revealedGrid.getVisible(x, y);
+                const pathGrid = revealedGrid.obfuscateGrid(x, y, visibilityMap);
+                
+                const start = pathGrid.getCell(x, y);
+                const goal = pathGrid.getCell(end.x, end.y);
+                const path = Astar(start, goal, Cell.heuristic);
+                path.shift();
+
+                return {...state, pathGrid, visibilityMap, revealedGrid, path, stage: 'STEP_FOG'};
+            }
+
+            case ActionTypes.STEP_FOG: {
+                const path = [...state.path];
+                const {revealedGrid, end} = state;
+                const nextLocation = path.shift();
+                let stage, visibilityMap, pathGrid;
+
+                if (path.length > 0) {
+                    stage = 'STEP_FOG';
+                    visibilityMap = new Map(...state.visibilityMap, ...revealedGrid.getVisible(nextLocation.x, nextLocation.y));
+                    pathGrid = revealedGrid.obfuscateGrid(nextLocation.x, nextLocation.y, visibilityMap);
+
+                    const start = pathGrid.getCell(nextLocation.x, nextLocation.y);
+                    const goal = pathGrid.getCell(end.x, end.y);
+
+                    const path = Astar(start, goal, Cell.heuristic);
+                    path.shift();
+                } else {
+                    stage = 'RESET';
+                    pathGrid = revealedGrid;
+                    visibilityMap = state.visibilityMap;
+                }
+
+                return {...state, stage, path, player: {x: nextLocation.x, y: nextLocation.y}, pathGrid, visibilityMap}
+            }
+
             default: {
                 return state;
             }
