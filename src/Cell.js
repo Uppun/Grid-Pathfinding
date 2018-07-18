@@ -24,7 +24,6 @@ export default class Cell {
 
     static fogVisibilityLevels = {
         VISIBLE: 'visible',
-        SEEN: 'seen',
         UNKNOWN: 'unknown',
     }
 

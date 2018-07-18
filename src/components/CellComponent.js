@@ -17,7 +17,7 @@ export default class CellComponent extends Component {
             'cell', passable ? 'passable' : 'impassable', 
             {player: type === 'player', end: type === 'end'}, 
             {mountain: terrain === Cell.Terrain.MOUNTAIN && type === Cell.Terrain.NORMAL && passable},
-            {seen: fogVisibility === Cell.fogVisibilityLevels.SEEN, unknown: fogVisibility === Cell.fogVisibilityLevels.UNKNOWN}
+            {seen: fogVisibility === 'seen', unknown: fogVisibility === 'unknown'}
         );
 
         return (

@@ -33,9 +33,9 @@
 }
 
 .seen {
-    filter: brightness(75%);
+    filter: brightness(50%);
 }
 
 .unknown {
-    filter: brightness(50%);
+    filter: brightness(0%);
 }

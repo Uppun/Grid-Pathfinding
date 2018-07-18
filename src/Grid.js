@@ -19,27 +19,14 @@ export default class Grid {
         return newGrid;
     }
 
-    obfuscateGrid(x, y, fullVisibilityMap) {
-        const fogGrid = new Grid(this.width, this.height);
-        const visibleCells = this.getVisible(x, y);
-
-        for (let row = 0; row < this.height; row++) {
-            for (let column = 0; column < this.width; column++) {
-                if (!visibleCells.has(`${column}, ${row}`)) {
-                    if (!fullVisibilityMap.has(`${column}, ${row}`)) {
-                        fogGrid.grid[row][column].fogVisibility = Cell.fogVisibilityLevels.UNKNOWN;
-                    } else {
-                        fogGrid.grid[row][column] = this.getCell(column, row);
-                        fogGrid.grid[row][column].fogVisibility = Cell.fogVisibilityLevels.SEEN;
-                    }
-                } else {
-                    fogGrid.grid[row][column] = this.getCell(column, row);
-                    fogGrid.grid[row][column].fogVisibility = Cell.fogVisibilityLevels.VISIBLE;
-                }
-            }
+    obfuscateGrid(x, y, grid, visibleCells) {
+        for (let cell of visibleCells) {
+            grid.grid[cell.y][cell.x].terrain = cell.terrain;
+            grid.grid[cell.y][cell.x].passable = cell.passable;
+            grid.grid[cell.y][cell.x].fogVisibility = cell.fogVisibility;
         }
 
-        return fogGrid;
+        return grid;
     }
 
     _initializeGrid() {
@@ -63,14 +50,14 @@ export default class Grid {
         return null;
     }
 
-    getVisible(x, y) {
-        const visibleCells = new Map();
+    getVisible = (x, y) => {
+        const visibleCells = new Set();
 
         for (let row = y - 2; row <= y + 2; row++) {
             for (let column = x - 2; column <= x + 2; column++) {
                 const cell = this.getCell(column, row);
                 if (cell) {
-                    visibleCells.set(`${column}, ${row}`, cell);
+                    visibleCells.add(cell);
                 }
             }
         }

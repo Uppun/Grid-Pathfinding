@@ -85,7 +85,7 @@ class PathfinderGrid extends Component {
     }
 
     render() {
-        const {player, pathGrid, end, stage} = this.state;
+        const {player, pathGrid, end, stage, visibleCells} = this.state;
 
         const canGenerate = stage === 'WALL';
 
@@ -103,7 +103,13 @@ class PathfinderGrid extends Component {
                                 } else if (end.y === rowIndex && end.x === columnIndex) {
                                   type = 'end';
                                 }
-                                return (<Cell passable={cell.passable} key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} fogVisibility={cell.fogVisibility}/>);
+                                let fogVisibility = cell.fogVisibility;
+                                if (visibleCells) {
+                                    if (!visibleCells.has(cell) && cell.fogVisibility !== 'unknown') {
+                                        fogVisibility = 'seen';
+                                    } 
+                                }
+                                return (<Cell passable={cell.passable} key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} fogVisibility={fogVisibility}/>);
                             })}
                         </div>)}
                 </div>

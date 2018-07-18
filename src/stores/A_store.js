@@ -60,7 +60,7 @@ class A_store extends ReduceStore {
             }
 
             case ActionTypes.RESET: {
-                return {pathGrid: new Grid(SIZE, SIZE), player: {x: -1, y: -1}, end: {x: -2, y: -2}, stage: 'STARTP', path: ''};
+                return {pathGrid: new Grid(SIZE, SIZE), player: {x: -1, y: -1}, end: {x: -2, y: -2}, stage: 'STARTP', path: '', visibleCells: ''};
             }
 
             case ActionTypes.STEP: {
@@ -75,40 +75,47 @@ class A_store extends ReduceStore {
                 const {player, end} = state;
                 const {x, y} = player;
                 const revealedGrid = mapGenerator(player, end, new Grid(SIZE, SIZE));
-                const visibilityMap = revealedGrid.getVisible(x, y);
-                const pathGrid = revealedGrid.obfuscateGrid(x, y, visibilityMap);
-                
+                const pathGrid = new Grid(SIZE, SIZE);
+
+                for (let row = 0; row < SIZE; row++) {
+                    for (let column = 0; column < SIZE; column++) {
+                        pathGrid.grid[row][column].fogVisibility = Cell.fogVisibilityLevels.UNKNOWN;
+                    }
+                }
+                let visibleCells = revealedGrid.getVisible(x, y);
+                revealedGrid.obfuscateGrid(x, y, pathGrid, visibleCells);
+                visibleCells = pathGrid.getVisible(x, y);
+
                 const start = pathGrid.getCell(x, y);
                 const goal = pathGrid.getCell(end.x, end.y);
                 const path = Astar(start, goal, Cell.heuristic);
                 path.shift();
 
-                return {...state, pathGrid, visibilityMap, revealedGrid, path, stage: 'STEP_FOG'};
+                return {...state, pathGrid, revealedGrid, path, stage: 'STEP_FOG', visibleCells};
             }
 
             case ActionTypes.STEP_FOG: {
-                const path = [...state.path];
+                let path = [...state.path];
                 const {revealedGrid, end} = state;
                 const nextLocation = path.shift();
-                let stage, visibilityMap, pathGrid;
+                let stage, pathGrid, visibleCells;
 
                 if (path.length > 0) {
                     stage = 'STEP_FOG';
-                    visibilityMap = new Map(...state.visibilityMap, ...revealedGrid.getVisible(nextLocation.x, nextLocation.y));
-                    pathGrid = revealedGrid.obfuscateGrid(nextLocation.x, nextLocation.y, visibilityMap);
+                    visibleCells = revealedGrid.getVisible(nextLocation.x, nextLocation.y);
+                    pathGrid = revealedGrid.obfuscateGrid(nextLocation.x, nextLocation.y, state.pathGrid, visibleCells);
+                    visibleCells = pathGrid.getVisible(nextLocation.x, nextLocation.y);
 
                     const start = pathGrid.getCell(nextLocation.x, nextLocation.y);
                     const goal = pathGrid.getCell(end.x, end.y);
-
-                    const path = Astar(start, goal, Cell.heuristic);
+                    path = Astar(start, goal, Cell.heuristic);
                     path.shift();
                 } else {
                     stage = 'RESET';
                     pathGrid = revealedGrid;
-                    visibilityMap = state.visibilityMap;
                 }
 
-                return {...state, stage, path, player: {x: nextLocation.x, y: nextLocation.y}, pathGrid, visibilityMap}
+                return {...state, stage, path, player: {x: nextLocation.x, y: nextLocation.y}, pathGrid, visibleCells}
             }
 
             default: {
