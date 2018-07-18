@@ -60,7 +60,7 @@ class A_store extends ReduceStore {
             }
 
             case ActionTypes.RESET: {
-                return {pathGrid: new Grid(SIZE, SIZE), player: {x: -1, y: -1}, end: {x: -2, y: -2}, stage: 'STARTP', path: '', visibleCells: ''};
+                return {pathGrid: new Grid(SIZE, SIZE), player: {x: -1, y: -1}, end: {x: -2, y: -2}, stage: 'STARTP', path: '', visibleCells: '', seenCells: ''};
             }
 
             case ActionTypes.STEP: {
@@ -77,26 +77,23 @@ class A_store extends ReduceStore {
                 const revealedGrid = mapGenerator(player, end, new Grid(SIZE, SIZE));
                 const pathGrid = new Grid(SIZE, SIZE);
 
-                for (let row = 0; row < SIZE; row++) {
-                    for (let column = 0; column < SIZE; column++) {
-                        pathGrid.grid[row][column].fogVisibility = Cell.fogVisibilityLevels.UNKNOWN;
-                    }
-                }
                 let visibleCells = revealedGrid.getVisible(x, y);
                 revealedGrid.obfuscateGrid(x, y, pathGrid, visibleCells);
+                let seenCells;
                 visibleCells = pathGrid.getVisible(x, y);
+                seenCells = pathGrid.getVisible(x, y);
 
                 const start = pathGrid.getCell(x, y);
                 const goal = pathGrid.getCell(end.x, end.y);
                 const path = Astar(start, goal, Cell.heuristic);
                 path.shift();
 
-                return {...state, pathGrid, revealedGrid, path, stage: 'STEP_FOG', visibleCells};
+                return {...state, pathGrid, revealedGrid, path, stage: 'STEP_FOG', visibleCells, seenCells};
             }
 
             case ActionTypes.STEP_FOG: {
                 let path = [...state.path];
-                const {revealedGrid, end} = state;
+                const {revealedGrid, end, seenCells} = state;
                 const nextLocation = path.shift();
                 let stage, pathGrid, visibleCells;
 
@@ -105,6 +102,9 @@ class A_store extends ReduceStore {
                     visibleCells = revealedGrid.getVisible(nextLocation.x, nextLocation.y);
                     pathGrid = revealedGrid.obfuscateGrid(nextLocation.x, nextLocation.y, state.pathGrid, visibleCells);
                     visibleCells = pathGrid.getVisible(nextLocation.x, nextLocation.y);
+                    for (const cell of visibleCells) {
+                        seenCells.add(cell);
+                    }
 
                     const start = pathGrid.getCell(nextLocation.x, nextLocation.y);
                     const goal = pathGrid.getCell(end.x, end.y);
@@ -115,7 +115,7 @@ class A_store extends ReduceStore {
                     pathGrid = revealedGrid;
                 }
 
-                return {...state, stage, path, player: {x: nextLocation.x, y: nextLocation.y}, pathGrid, visibleCells}
+                return {...state, stage, path, player: {x: nextLocation.x, y: nextLocation.y}, pathGrid, visibleCells, seenCells}
             }
 
             default: {

@@ -23,7 +23,6 @@ export default class Grid {
         for (let cell of visibleCells) {
             grid.grid[cell.y][cell.x].terrain = cell.terrain;
             grid.grid[cell.y][cell.x].passable = cell.passable;
-            grid.grid[cell.y][cell.x].fogVisibility = cell.fogVisibility;
         }
 
         return grid;
