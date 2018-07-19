@@ -12,20 +12,17 @@ export default class Grid {
 
         for (let i = 0; i < this.height; i++) {
             for (let j = 0; j < this.width; j++) {
-                newGrid.grid[i][j].passable = this.grid[i][j].passable;
+                newGrid.grid[i][j].terrain = this.grid[i][j].terrain;
             }
         }
 
         return newGrid;
     }
 
-    obfuscateGrid(x, y, grid, visibleCells) {
+    copyCells(visibleCells) {
         for (let cell of visibleCells) {
-            grid.grid[cell.y][cell.x].terrain = cell.terrain;
-            grid.grid[cell.y][cell.x].passable = cell.passable;
+            cell.terrain = this.grid[cell.y][cell.x].terrain;
         }
-
-        return grid;
     }
 
     _initializeGrid() {
@@ -49,7 +46,7 @@ export default class Grid {
         return null;
     }
 
-    getVisible = (x, y) => {
+    getVisible(x, y) {
         const visibleCells = new Set();
 
         for (let row = y - 2; row <= y + 2; row++) {

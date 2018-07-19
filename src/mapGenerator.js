@@ -64,13 +64,13 @@ export default function mapGenerator(start, goal, grid) {
             }
         }
 
-        const isHoleSafe = Array.from(borderCells).every(cell => cell.passable);
+        const isHoleSafe = Array.from(borderCells).every(cell => cell.terrain !== 'wall');
         if (!isHoleSafe) {
             continue;
         }
 
         for (const cell of holeCells) {
-            cell.passable = false;
+            cell.terrain = Cell.Terrain.WALL;
         }
     }
 
@@ -82,7 +82,7 @@ function calculateWalls(grid) {
 
     for (let y = 0; y < grid.height; y++) {
         for (let x = 0; x < grid.width; x++) {
-            if (!grid.grid[y][x].passable) {
+            if (grid.grid[y][x].terrain === Cell.Terrain.WALL) {
                 totalWalls++;
             }
         }

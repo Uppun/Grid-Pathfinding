@@ -113,7 +113,7 @@ class PathfinderGrid extends Component {
                                         }
                                     }
                                 }
-                                return (<Cell passable={cell.passable} key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} fogVisibility={fogVisibility}/>);
+                                return (<Cell key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} fogVisibility={fogVisibility}/>);
                             })}
                         </div>)}
                 </div>
