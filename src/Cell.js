@@ -56,7 +56,7 @@ export default class Cell {
         for (const offset of neighborOffsets) {
             const neighbor = this.grid.getCell(this.x + offset.coords[0], this.y + offset.coords[1]);
 
-            if (!neighbor || !neighbor.terrain === 'wall') {
+            if (!neighbor || neighbor.terrain === Cell.Terrain.WALL) {
                 continue;
             }
 

@@ -36,10 +36,10 @@ class A_store extends ReduceStore {
                 const {x, y} = action;
                 const pathGrid = state.pathGrid.clone();
                 const cell = pathGrid.getCell(x, y);
-                if (cell.terrain === 'wall') {
-                    cell.terrain = 'normal';
+                if (cell.terrain === Cell.Terrain.WALL) {
+                    cell.terrain = Cell.Terrain.NORMAL;
                 } else {
-                    cell.terrain = 'wall';
+                    cell.terrain = Cell.Terrain.WALL;
                 }
 
                 return {...state, pathGrid};
@@ -63,23 +63,27 @@ class A_store extends ReduceStore {
             }
 
             case ActionTypes.RESET: {
-                return {pathGrid: new Grid(SIZE, SIZE), 
+                return {
+                    pathGrid: new Grid(SIZE, SIZE), 
                         player: {x: -1, y: -1},
                         end: {x: -2, y: -2}, 
                         stage: 'STARTP', 
                         path: null, 
                         visibleCells: null, 
-                        seenCells: null};
+                        seenCells: null
+                    };
             }
 
             case ActionTypes.STEP: {
                 const [nextLocation, ...path] = state.path;
 
                 const stage = path.length > 0 ? 'STEP' : 'RESET';
-                return {...state, 
+                return {
+                    ...state, 
                         stage, 
                         path, 
-                        player: {x: nextLocation.x, y: nextLocation.y}};
+                        player: {x: nextLocation.x, y: nextLocation.y}
+                    };
             }
 
             case ActionTypes.GENERATE_FOG: {
@@ -97,13 +101,15 @@ class A_store extends ReduceStore {
                 const path = Astar(start, goal, Cell.heuristic);
                 path.shift();
 
-                return {...state, 
+                return {
+                        ...state, 
                         pathGrid, 
                         revealedGrid,
                         path, 
                         stage: 'STEP_FOG', 
                         visibleCells, 
-                        seenCells};
+                        seenCells
+                    };
             }
 
             case ActionTypes.STEP_FOG: {
@@ -131,13 +137,15 @@ class A_store extends ReduceStore {
                     pathGrid = revealedGrid;
                 }
 
-                return {...state, 
+                return {
+                        ...state, 
                         stage, 
                         path, 
                         player: {x: nextLocation.x, y: nextLocation.y}, 
                         pathGrid, 
                         visibleCells, 
-                        seenCells}
+                        seenCells
+                    }
             }
 
             default: {

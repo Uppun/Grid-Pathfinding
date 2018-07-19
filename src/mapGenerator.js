@@ -64,7 +64,7 @@ export default function mapGenerator(start, goal, grid) {
             }
         }
 
-        const isHoleSafe = Array.from(borderCells).every(cell => cell.terrain !== 'wall');
+        const isHoleSafe = Array.from(borderCells).every(cell => cell.terrain !== Cell.Terrain.WALL);
         if (!isHoleSafe) {
             continue;
         }
