@@ -49,4 +49,16 @@ export default {
             type: ActionTypes.STEP,
         });
     },
+
+    generateFog() {
+        Dispatcher.dispatch({
+            type: ActionTypes.GENERATE_FOG,
+        });
+    },
+
+    stepFog() {
+        Dispatcher.dispatch({
+            type: ActionTypes.STEP_FOG,
+        });
+    },
 }

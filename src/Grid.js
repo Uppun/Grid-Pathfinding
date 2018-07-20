@@ -11,12 +11,18 @@ export default class Grid {
         const newGrid = new Grid(this.width, this.height);
 
         for (let i = 0; i < this.height; i++) {
-            for (let j = 0; j < this.width  ; j++) {
-                newGrid.grid[i][j].passable = this.grid[i][j].passable;
+            for (let j = 0; j < this.width; j++) {
+                newGrid.grid[i][j].terrain = this.grid[i][j].terrain;
             }
         }
 
         return newGrid;
+    }
+
+    copyCells(cells) {
+        for (const cell of cells) {
+            cell.terrain = this.grid[cell.y][cell.x].terrain;
+        }
     }
 
     _initializeGrid() {
@@ -31,12 +37,27 @@ export default class Grid {
     }
 
     getCell(x, y) {
-        if(this.grid[y]) {
-            if(this.grid[y][x]) {
+        if (this.grid[y]) {
+            if (this.grid[y][x]) {
                 return this.grid[y][x];
             }
         }
 
         return null;
+    }
+
+    getVisible(x, y) {
+        const visibleCells = new Set();
+
+        for (let row = y - 2; row <= y + 2; row++) {
+            for (let column = x - 2; column <= x + 2; column++) {
+                const cell = this.getCell(column, row);
+                if (cell) {
+                    visibleCells.add(cell);
+                }
+            }
+        }
+
+        return visibleCells;
     }
 }

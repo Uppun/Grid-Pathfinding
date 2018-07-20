@@ -13,6 +13,7 @@
     height: 25px;
     width: 25px; 
     border: 1px solid grey;
+    background-color: white;
 }
 
 .impassable {
@@ -29,4 +30,12 @@
 
 .mountain {
     background-color: rgb(87, 64, 13);
+}
+
+.seen {
+    filter: brightness(50%);
+}
+
+.unknown {
+    filter: brightness(0%);
 }

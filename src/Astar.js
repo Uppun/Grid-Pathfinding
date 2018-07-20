@@ -12,7 +12,6 @@ export default function A_star(start, goal, heuristic) {
     while (openNodes.length > 0) {
         const root = openNodes.extractRoot();
         const current = root.node;
-
         if (current === goal) {
             return reconstructPath(cameFrom, current);
         }

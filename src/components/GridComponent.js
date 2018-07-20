@@ -9,6 +9,7 @@ const STAGE_LABELS = {
     WALL: 'Pathfind',
     STEP: 'Next Step',
     RESET: 'Reset',
+    STEP_FOG: 'Next Step',
   };
 
 class PathfinderGrid extends Component {
@@ -39,6 +40,11 @@ class PathfinderGrid extends Component {
                 break;
             }
 
+            case 'STEP_FOG': {
+                GridActions.stepFog();
+                break;
+            }
+
             default: {
                 break;
             }
@@ -47,6 +53,10 @@ class PathfinderGrid extends Component {
 
     handleGenerateClick() {
         GridActions.generate();
+    }
+
+    handleGenerateFogClick() {
+        GridActions.generateFog();
     }
 
     handleCellClick = (x, y) => {
@@ -75,7 +85,7 @@ class PathfinderGrid extends Component {
     }
 
     render() {
-        const {player, pathGrid, end, stage} = this.state;
+        const {player, pathGrid, end, stage, visibleCells, seenCells} = this.state;
 
         const canGenerate = stage === 'WALL';
 
@@ -93,12 +103,21 @@ class PathfinderGrid extends Component {
                                 } else if (end.y === rowIndex && end.x === columnIndex) {
                                   type = 'end';
                                 }
-                                return (<Cell passable={cell.passable} key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} />);
+                                let fogClassName;
+                                if (visibleCells && !visibleCells.has(cell)) {
+                                    if (seenCells && seenCells.has(cell)) {
+                                        fogClassName = 'seen';
+                                    } else {
+                                        fogClassName = 'unknown';
+                                    }
+                                }
+                                return (<Cell key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} fogClassName={fogClassName} />);
                             })}
                         </div>)}
                 </div>
                 {stageLabel ? <button onClick={this.handleClick}>{stageLabel}</button> : null}
                 {canGenerate ? <button onClick={this.handleGenerateClick}>Generate</button> : null}
+                {canGenerate ? <button onClick={this.handleGenerateFogClick}>Generate Fog Map</button> : null}
             </div>
         )
     }

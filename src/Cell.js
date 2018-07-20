@@ -17,13 +17,13 @@ export default class Cell {
         this.x = x;
         this.y = y;
         this.grid = grid;
-        this.passable = true;
         this.terrain = Cell.Terrain.NORMAL;
     }
 
     static Terrain = {
         NORMAL: 'normal',
         MOUNTAIN: 'mountain',
+        WALL: 'wall',
     }
 
     static heuristic(a, b) {
@@ -56,7 +56,7 @@ export default class Cell {
         for (const offset of neighborOffsets) {
             const neighbor = this.grid.getCell(this.x + offset.coords[0], this.y + offset.coords[1]);
 
-            if (!neighbor || !neighbor.passable) {
+            if (!neighbor || neighbor.terrain === Cell.Terrain.WALL) {
                 continue;
             }
 

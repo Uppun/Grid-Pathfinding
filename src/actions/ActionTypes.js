@@ -6,4 +6,6 @@ export default {
     PATHFIND: 'PATHFIND',
     RESET: 'RESET',
     STEP: 'STEP',
+    GENERATE_FOG: 'GENERATE_FOG',
+    STEP_FOG: 'STEP_FOG',
 }
