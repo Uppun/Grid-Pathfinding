@@ -59,14 +59,11 @@ class A_store extends ReduceStore {
                 const cell = pathGrid.getCell(x, y);
                 if (cell.terrain === Cell.Terrain.WALL) {
                     cell.terrain = Cell.Terrain.MOUNTAIN;
+                } else if (cell.terrain === Cell.Terrain.MOUNTAIN) {
+                    cell.terrain = Cell.Terrain.NORMAL;
                 } else {
-                    if (cell.terrain === Cell.Terrain.MOUNTAIN) {
-                        cell.terrain = Cell.Terrain.NORMAL;
-                    } else {
-                        cell.terrain = Cell.Terrain.WALL;
-                    }
+                    cell.terrain = Cell.Terrain.WALL;
                 }
-
                 return {...state, pathGrid};
             }
 
