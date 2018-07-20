@@ -103,17 +103,15 @@ class PathfinderGrid extends Component {
                                 } else if (end.y === rowIndex && end.x === columnIndex) {
                                   type = 'end';
                                 }
-                                let fogVisibility;
-                                if (visibleCells && seenCells) {
-                                    if (!visibleCells.has(cell)) {
-                                        if (seenCells.has(cell)) {
-                                            fogVisibility = 'seen';
-                                        } else {
-                                            fogVisibility = 'unknown';
-                                        }
+                                let fogClassName;
+                                if (visibleCells && !visibleCells.has(cell)) {
+                                    if (seenCells && seenCells.has(cell)) {
+                                        fogClassName = 'seen';
+                                    } else {
+                                        fogClassName = 'unknown';
                                     }
                                 }
-                                return (<Cell key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} fogVisibility={fogVisibility}/>);
+                                return (<Cell key={columnIndex} type={type} handleClick={this.handleCellClick} x={cell.x} y={cell.y} terrain={cell.terrain} fogClassName={fogClassName} />);
                             })}
                         </div>)}
                 </div>

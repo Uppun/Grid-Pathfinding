@@ -19,8 +19,8 @@ export default class Grid {
         return newGrid;
     }
 
-    copyCells(visibleCells) {
-        for (const cell of visibleCells) {
+    copyCells(cells) {
+        for (const cell of cells) {
             cell.terrain = this.grid[cell.y][cell.x].terrain;
         }
     }
