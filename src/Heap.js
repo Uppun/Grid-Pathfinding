@@ -5,6 +5,10 @@ export default class Heap {
     get length() {
         return this.heap.length;
     }
+    
+    checkNode(node) {
+        return this._nodeIndices.has(node);
+    }
 
     extractRoot() {
         this.swap(0, this.heap.length - 1);
@@ -15,6 +19,14 @@ export default class Heap {
         this.minHeapify(0);
 
         return node; 
+    }
+
+    topKey() {
+        if (this.heap.length > 0) {
+            return this.heap[0].key;
+        }
+
+        return [Infinity, Infinity];
     }
 
     setKey(node, key) {
@@ -59,7 +71,7 @@ export default class Heap {
     }
 
     checkHeap(position) {
-        while (position> 0) {
+        while (position > 0) {
             position = Math.floor((position - 2) / 2);
             this.minHeapify(position);
         }
@@ -73,10 +85,27 @@ export default class Heap {
 
     compare(a, b) {
         if (a && b) {
-            return a.key - b.key;
+            if (Array.isArray(a) && Array.isArray(b)) {
+                if (a[0] > b[0] || (a[0] === b[0] && a[1] > b[1])) {
+                    return 1;
+                }
+
+                return -1;
+            }
+
+            return a - b;
         }
 
         return 0;
+    }
+
+    remove(node) {
+        const index = this._nodeIndices.get(node);
+        if (index) {
+            this.heap.splice(index, 1);
+            this._nodeIndices.delete(node);
+            this.checkHeap(this.heap.length - 1);
+        }
     }
 
     swap(a, b) {

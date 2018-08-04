@@ -50,6 +50,31 @@ export default class Cell {
         }
     }
 
+    static calculateCost(a, b) {
+        let cost = 0;
+        if (a.x !== b.x && a.y !== b.y) {
+            cost += 1.5;
+        } else {
+            cost += 1;
+        }
+
+        if (a.terrain !== b.terrain) {
+            if (a.terrain === 'mountain' && b.terrain === 'normal') {
+                cost = cost * .5;
+            }
+
+            if (a.terrain === 'normal' && b.terrain === 'mountain') {
+                cost = cost * 3;
+            }
+
+            if (b.terrain === 'wall') {
+                cost = Infinity;
+            }
+        }
+
+        return cost;
+    }
+
     getNeighbors() {
         const neighbors = [];
 

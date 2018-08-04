@@ -9,7 +9,9 @@ const STAGE_LABELS = {
     WALL: 'Pathfind',
     STEP: 'Next Step',
     RESET: 'Reset',
+    SELECT_ALGORITHM: 'A* Pathfind',
     STEP_FOG: 'Next Step',
+    DSTAR_STEP: 'Next Step',
   };
 
 class PathfinderGrid extends Component {
@@ -45,6 +47,16 @@ class PathfinderGrid extends Component {
                 break;
             }
 
+            case 'SELECT_ALGORITHM': {
+                GridActions.stepFog();
+                break;
+            }
+
+            case 'DSTAR_STEP': {
+                GridActions.dstarStep();
+                break;
+            }
+
             default: {
                 break;
             }
@@ -57,6 +69,10 @@ class PathfinderGrid extends Component {
 
     handleGenerateFogClick() {
         GridActions.generateFog();
+    }
+
+    handleDstarClick = () => {
+        GridActions.dstarlite();
     }
 
     handleCellClick = (x, y) => {
@@ -104,7 +120,7 @@ class PathfinderGrid extends Component {
                                   type = 'end';
                                 }
                                 let fogClassName;
-                                if (visibleCells && !visibleCells.has(cell)) {
+                                if (visibleCells && !visibleCells.visibleCells.has(cell)) {
                                     if (seenCells && seenCells.has(cell)) {
                                         fogClassName = 'seen';
                                     } else {
@@ -116,6 +132,7 @@ class PathfinderGrid extends Component {
                         </div>)}
                 </div>
                 {stageLabel ? <button onClick={this.handleClick}>{stageLabel}</button> : null}
+                {stage === 'SELECT_ALGORITHM' ? <button onClick={this.handleDstarClick}>D*lite Pathfind</button> : null}
                 {canGenerate ? <button onClick={this.handleGenerateClick}>Generate</button> : null}
                 {canGenerate ? <button onClick={this.handleGenerateFogClick}>Generate Fog Map</button> : null}
             </div>

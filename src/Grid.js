@@ -20,9 +20,16 @@ export default class Grid {
     }
 
     copyCells(cells) {
+        const changedCells = new Map();
         for (const cell of cells) {
-            cell.terrain = this.grid[cell.y][cell.x].terrain;
+            const newCell = this.grid[cell.y][cell.x];
+            if (cell.terrain !== newCell.terrain) {
+                changedCells.set(newCell, cell.terrain);
+            }
+            cell.terrain = newCell.terrain;
         }
+
+        return changedCells;
     }
 
     _initializeGrid() {
