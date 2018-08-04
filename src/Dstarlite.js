@@ -47,9 +47,9 @@ export default class Dstarlite {
     updateVertex(node) {
         if (this.gscore.get(node) !== this.rhs.get(node)) {
             if (this.Heap.checkNode(node)) {
-                this.Heap.setKey(node, this.calculateKey(node));
+                this.Heap.setKey(node, this.calculateKey(node.node));
             } else {
-                this.Heap.insert(node, this.calculateKey(node));
+                this.Heap.insert(node, this.calculateKey(node.node));
             }
         } else if (this.Heap.checkNode(node)) {
             this.Heap.remove(node);
@@ -61,8 +61,9 @@ export default class Dstarlite {
         while (this.compareKeys(k_old, this.calculateKey(this.start)) < 0 || this.rhs.get(this.start) !== this.gscore.get(this.start)) {
             k_old = this.Heap.topKey();
             const u = this.Heap.extractRoot();
-            if (this.compareKeys(k_old, this.calculateKey(u)) < 0) {
-                this.Heap.insert(u, this.calculateKey(u));
+            const uKey = this.calculateKey(u.node);
+            if (this.compareKeys(k_old, uKey) < 0) {
+                this.Heap.insert(u.node, uKey);
             } else {
                 const neighbors = u.getNeighbors();
                 const urhs = this.rhs.get(u);
@@ -80,11 +81,8 @@ export default class Dstarlite {
     }
 
     beginPathfinding() {
-        console.log("Starting initialize")
         this.initialize();
-        console.log("initialize complete")
         this.computeShortestPath();
-        console.log("shortest path computed")
     }
 
     nextStep() {
