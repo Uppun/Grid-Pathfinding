@@ -60,7 +60,7 @@ export default class Dstarlite {
     }
 
     computeShortestPath() {
-        while (this.compareKeys(this.calculateKey(this.start), this.Heap.topKey()) < 0 || this.rhs.get(this.start) > this.gscore.get(this.start)) {
+        while (this.compareKeys(this.calculateKey(this.start), this.Heap.topKey()) > 0 || this.rhs.get(this.start) > this.gscore.get(this.start)) {
             const u = this.Heap.top().node;
             const k_old = this.Heap.topKey();
             const k_new = this.calculateKey(u);
@@ -80,7 +80,7 @@ export default class Dstarlite {
                 const g_old = this.gscore.get(u);
                 this.gscore.set(u, Infinity);
                 const predeccesors = u.getNeighbors();
-                this.predeccesors.push({node: u});
+                predeccesors.push({node: u});
                 for (const predeccesor of predeccesors) {
                     if (this.rhs.get(predeccesor.node) === this.heuristic(predeccesor.node, u) + g_old) {
                         if (predeccesor.node !== this.goal) {
@@ -158,6 +158,8 @@ export default class Dstarlite {
 
         const nodeToEdgeCosts = new PairSet();
 
+        this.km += this.heuristic(this.predeccesor, this.start);
+        this.predeccesor = this.start;
         for (const [cell, oldTerrain] of changedCells) {
             const neighbors = cell.getNeighbors();
             for (const neighbor of neighbors) {
