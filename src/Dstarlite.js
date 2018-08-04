@@ -50,9 +50,9 @@ export default class Dstarlite {
     updateVertex(node) {
         if (this.gscore.get(node) !== this.rhs.get(node)) {
             if (this.Heap.checkNode(node)) {
-                this.Heap.setKey(node, this.calculateKey(node.node));
+                this.Heap.setKey(node, this.calculateKey(node));
             } else {
-                this.Heap.insert(node, this.calculateKey(node.node));
+                this.Heap.insert(node, this.calculateKey(node));
             }
         } else if (this.Heap.checkNode(node)) {
             this.Heap.remove(node);
