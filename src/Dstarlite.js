@@ -40,6 +40,9 @@ export default class Dstarlite {
         if (key1[0] > key2[0] || (key1[0] === key2[0] && key1[1] > key2[1])) {
             return 1;
         }
+        if (key1[0] === key2[0] && key1[1] === key2[1]) {
+            return 0;
+        }
 
         return -1;
     }
@@ -57,7 +60,7 @@ export default class Dstarlite {
     }
 
     computeShortestPath() {
-        while (this.compareKeys(this.Heap.topKey(), this.calculateKey(this.start)) < 0 || this.rhs.get(this.start) > this.gscore.get(this.start)) {
+        while (this.compareKeys(this.calculateKey(this.start), this.Heap.topKey()) < 0 || this.rhs.get(this.start) > this.gscore.get(this.start)) {
             const u = this.Heap.top().node;
             const k_old = this.Heap.topKey();
             const k_new = this.calculateKey(u);
@@ -68,34 +71,34 @@ export default class Dstarlite {
                 this.Heap.remove(u);
                 const predeccesors = u.getNeighbors();
                 for (const predeccesor of predeccesors) {
-                    if (predeccesor !== this.goal) {
-                        this.rhs.set(predeccesor, Math.min(this.rhs.get(predeccesor), this.heuristic(predeccesor, u) + this.gscore.get(u)));
+                    if (predeccesor.node !== this.goal) {
+                        this.rhs.set(predeccesor.node, Math.min(this.rhs.get(predeccesor.node), this.heuristic(predeccesor.node, u) + this.gscore.get(u)));
                     }
-                    this.updateVertex(predeccesor);
+                    this.updateVertex(predeccesor.node);
                 }
             } else {
                 const g_old = this.gscore.get(u);
                 this.gscore.set(u, Infinity);
                 const predeccesors = u.getNeighbors();
-                predeccesors.push(u);
+                this.predeccesors.push({node: u});
                 for (const predeccesor of predeccesors) {
-                    if (this.rhs.get(predeccesor) === this.heuristic(predeccesor, u) + g_old) {
-                        if (predeccesor !== this.goal) {
-                            const successors = predeccesor.getNeighbors();
+                    if (this.rhs.get(predeccesor.node) === this.heuristic(predeccesor.node, u) + g_old) {
+                        if (predeccesor.node !== this.goal) {
+                            const successors = predeccesor.node.getNeighbors();
                             let minSucc;
                             for (const successor of successors) {
                                 if (!minSucc) {
-                                    minSucc = successor;
+                                    minSucc = successor.node;
                                 } else {
-                                    if (this.heuristic(predeccesor, successor) + this.gscore.get(successor) < this.heuristic(predeccesor, minSucc) + this.gscore.get(minSucc)) {
-                                        minSucc = successor;
+                                    if (this.heuristic(predeccesor.node, successor.node) + this.gscore.get(successor.node) < this.heuristic(predeccesor.node, minSucc) + this.gscore.get(minSucc)) {
+                                        minSucc = successor.node;
                                     }
                                 }
                             }
-                            this.rhs.set(predeccesor, this.heuristic(predeccesor, minSucc) + this.gscore.get(minSucc));
+                            this.rhs.set(predeccesor.node, this.heuristic(predeccesor.node, minSucc) + this.gscore.get(minSucc));
                         }
                     }
-                    this.updateVertex(predeccesor);
+                    this.updateVertex(predeccesor.node);
                 }
             } 
         }
@@ -112,9 +115,9 @@ export default class Dstarlite {
         this.start = null; 
         for (const successor of successors) {
             if (!this.start) {
-                this.start = successor;
-            } else if (this.heuristic(this.predeccesor, successor.node) + this.gscore(successor.node) < this.heuristic(this.predeccesor, this.start) + this.gscore(this.start)) {
-                this.start = successor;
+                this.start = successor.node;
+            } else if (this.heuristic(this.predeccesor, successor.node) + this.gscore.get(successor.node) < this.heuristic(this.predeccesor, this.start) + this.gscore.get(this.start)) {
+                this.start = successor.node;
             }
         }
         return {x: this.start.x, y: this.start.y};
@@ -139,7 +142,7 @@ export default class Dstarlite {
             if (u !== this.goal) {
                 this.rhs.set(u, null);
                 for (const successor of u.getNeighbors()) {
-                    const successorCost = Cell.calculateCost(u, successor) + this.gscore.get(successor);
+                    const successorCost = Cell.calculateCost(u, successor.node) + this.gscore.get(successor.node);
                     const currentRhs = this.rhs.get(u);
                     if (!currentRhs) {
                         this.rhs.set(u, successorCost);
@@ -155,18 +158,18 @@ export default class Dstarlite {
 
         const nodeToEdgeCosts = new PairSet();
 
-        for (const cell of changedCells) {
+        for (const [cell, oldTerrain] of changedCells) {
             const neighbors = cell.getNeighbors();
             for (const neighbor of neighbors) {
-                if (!nodeToEdgeCosts.has(cell, neighbor)) {
-                    this.edgeCostEvaluation(cell, neighbor, changedCells);
-                    nodeToEdgeCosts.add(cell, neighbor);
+                if (!nodeToEdgeCosts.has(cell, neighbor.node)) {
+                    this.edgeCostEvaluation(cell, neighbor.node, changedCells);
+                    nodeToEdgeCosts.add(cell, neighbor.node);
                     this.updateVertex(cell);
                 }
-                if (!nodeToEdgeCosts.has(neighbor, cell)) {
-                    this.edgeCostEvaluation(neighbor, cell, changedCells);
-                    nodeToEdgeCosts.add(neighbor, cell);
-                    this.updateVertex(neighbor);
+                if (!nodeToEdgeCosts.has(neighbor.node, cell)) {
+                    this.edgeCostEvaluation(neighbor.node, cell, changedCells);
+                    nodeToEdgeCosts.add(neighbor.node, cell);
+                    this.updateVertex(neighbor.node);
                 } 
             }
         }
