@@ -57,24 +57,45 @@ export default class Dstarlite {
     }
 
     computeShortestPath() {
-        let k_old = this.Heap.topKey();
-        while (this.compareKeys(k_old, this.calculateKey(this.start)) < 0 || this.rhs.get(this.start) !== this.gscore.get(this.start)) {
-            k_old = this.Heap.topKey();
-            const u = this.Heap.extractRoot();
-            const uKey = this.calculateKey(u.node);
-            if (this.compareKeys(k_old, uKey) < 0) {
-                this.Heap.insert(u.node, uKey);
-            } else {
-                const neighbors = u.getNeighbors();
-                const urhs = this.rhs.get(u);
-                if (this.gscore.get(u) > urhs) {
-                    this.gscore.set(u, urhs);
-                } else {
-                    this.gscore.set(u, Infinity);
-                    this.updateVertex(u);
+        while (this.compareKeys(this.Heap.topKey(), this.calculateKey(this.start)) < 0 || this.rhs.get(this.start) > this.gscore.get(this.start)) {
+            const u = this.Heap.top().node;
+            const k_old = this.Heap.topKey();
+            const k_new = this.calculateKey(u);
+            if (this.compareKeys(k_old, k_new) < 0) {
+                this.Heap.setKey(u, k_new);
+            } else if (this.gscore.get(u) > this.rhs.get(u)) {
+                this.gscore.set(u, this.rhs.get(u));
+                this.Heap.remove(u);
+                const predeccesors = u.getNeighbors();
+                for (const predeccesor of predeccesors) {
+                    if (predeccesor !== this.goal) {
+                        this.rhs.set(predeccesor, Math.min(this.rhs.get(predeccesor), this.heuristic(predeccesor, u) + this.gscore.get(u)));
+                    }
+                    this.updateVertex(predeccesor);
                 }
-                for (const neighbor of neighbors) {
-                    this.updateVertex(neighbor);
+            } else {
+                const g_old = this.gscore.get(u);
+                this.gscore.set(u, Infinity);
+                const predeccesors = u.getNeighbors();
+                predeccesors.push(u);
+                for (const predeccesor of predeccesors) {
+                    if (this.rhs.get(predeccesor) === this.heuristic(predeccesor, u) + g_old) {
+                        if (predeccesor !== this.goal) {
+                            const successors = predeccesor.getNeighbors();
+                            let minSucc;
+                            for (const successor of successors) {
+                                if (!minSucc) {
+                                    minSucc = successor;
+                                } else {
+                                    if (this.heuristic(predeccesor, successor) + this.gscore.get(successor) < this.heuristic(predeccesor, minSucc) + this.gscore.get(minSucc)) {
+                                        minSucc = successor;
+                                    }
+                                }
+                            }
+                            this.rhs.set(predeccesor, this.heuristic(predeccesor, minSucc) + this.gscore.get(minSucc));
+                        }
+                    }
+                    this.updateVertex(predeccesor);
                 }
             } 
         }

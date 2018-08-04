@@ -21,6 +21,10 @@ export default class Heap {
         return node; 
     }
 
+    top() {
+        return this.heap[0];
+    }
+
     topKey() {
         if (this.heap.length > 0) {
             return this.heap[0].key;
