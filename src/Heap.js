@@ -34,6 +34,7 @@ export default class Heap {
     }
 
     setKey(node, key) {
+        console.log(this);
         const nodeIndex = this._nodeIndices.get(node);
         if (nodeIndex != null) {
             this.heap[nodeIndex].key = key;
@@ -51,11 +52,11 @@ export default class Heap {
         const leftChild = 2 * position + 1;
         const rightChild = 2 * position + 2;
             
-        if (leftChild < this.heap.length && this.compare(this.heap[leftChild], this.heap[position]) < 0) {
+        if (leftChild < this.heap.length && this.compare(this.heap[leftChild].key, this.heap[position].key) < 0) {
             smallest = leftChild;
         }
 
-        if (rightChild < this.heap.length && this.compare(this.heap[rightChild], this.heap[smallest]) < 0) {
+        if (rightChild < this.heap.length && this.compare(this.heap[rightChild].key, this.heap[smallest].key) < 0) {
             smallest = rightChild;
         }
             
@@ -76,7 +77,7 @@ export default class Heap {
 
     checkHeap(position) {
         while (position > 0) {
-            position = Math.floor((position - 2) / 2);
+            position = Math.floor((position - 1) / 2);
             this.minHeapify(position);
         }
     }
@@ -105,9 +106,11 @@ export default class Heap {
 
     remove(node) {
         const index = this._nodeIndices.get(node);
-        if (index) {
-            this.heap.splice(index, 1);
+        if (index != null) {
+            const lastElement = this.heap.pop();
             this._nodeIndices.delete(node);
+            this._nodeIndices.set(lastElement.node, index);
+            this.heap[index] = lastElement;
             this.checkHeap(this.heap.length - 1);
         }
     }

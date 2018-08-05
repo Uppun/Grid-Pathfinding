@@ -81,24 +81,27 @@ export default class Dstarlite {
                 this.gscore.set(u, Infinity);
                 const predeccesors = u.getNeighbors();
                 predeccesors.push({node: u});
-                for (const predeccesor of predeccesors) {
-                    if (this.rhs.get(predeccesor.node) === this.heuristic(predeccesor.node, u) + g_old) {
-                        if (predeccesor.node !== this.goal) {
-                            const successors = predeccesor.node.getNeighbors();
-                            let minSucc;
-                            for (const successor of successors) {
-                                if (!minSucc) {
-                                    minSucc = successor.node;
-                                } else {
-                                    if (this.heuristic(predeccesor.node, successor.node) + this.gscore.get(successor.node) < this.heuristic(predeccesor.node, minSucc) + this.gscore.get(minSucc)) {
-                                        minSucc = successor.node;
-                                    }
-                                }
-                            }
-                            this.rhs.set(predeccesor.node, this.heuristic(predeccesor.node, minSucc) + this.gscore.get(minSucc));
+                for (const {node: predeccesor} of predeccesors) {
+                    const cost = predeccesor !== u ? Cell.calculateCost(predeccesor, u) : 0;
+                    if (this.rhs.get(predeccesor) === cost + g_old) {
+                        if (predeccesor === this.goal) {
+                            continue;
                         }
+                        let bestSuccessor;
+                        let minRhs = Infinity;
+                        for (const {node: successor} of predeccesor.getNeighbors()) {
+                            const rhs = Cell.calculateCost(predeccesor, successor) + this.gscore.get(successor);
+                            if (rhs < minRhs) {
+                                bestSuccessor = successor;
+                                minRhs = rhs;
+                            }
+                        }
+                        if (bestSuccessor == null) {
+                            throw new Error('???');
+                        }
+                        this.rhs.set(predeccesor, minRhs);
                     }
-                    this.updateVertex(predeccesor.node);
+                    this.updateVertex(predeccesor);
                 }
             } 
         }
