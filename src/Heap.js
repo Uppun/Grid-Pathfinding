@@ -34,7 +34,6 @@ export default class Heap {
     }
 
     setKey(node, key) {
-        console.log(this);
         const nodeIndex = this._nodeIndices.get(node);
         if (nodeIndex != null) {
             this.heap[nodeIndex].key = key;
@@ -106,13 +105,18 @@ export default class Heap {
 
     remove(node) {
         const index = this._nodeIndices.get(node);
-        if (index != null) {
-            const lastElement = this.heap.pop();
-            this._nodeIndices.delete(node);
-            this._nodeIndices.set(lastElement.node, index);
-            this.heap[index] = lastElement;
-            this.checkHeap(this.heap.length - 1);
+        if (index == null) {
+            return;
         }
+        if (index === 0) {
+            this.heap = [];
+            this._nodeIndices.clear();
+            return;
+        }
+        const lastElement = this.heap.pop();
+        this._nodeIndices.set(lastElement.node, index);
+        this.heap[index] = lastElement;
+        this.checkHeap(this.heap.length - 1);
     }
 
     swap(a, b) {

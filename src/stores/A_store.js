@@ -169,7 +169,7 @@ class A_store extends ReduceStore {
                 let stage;
                 let visibleCells;
 
-                if (nextLocation.x !== end.x && nextLocation.y !== end.y) {
+                if (nextLocation.x !== end.x || nextLocation.y !== end.y) {
                     stage = 'DSTAR_STEP';
 
                     visibleCells = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid);

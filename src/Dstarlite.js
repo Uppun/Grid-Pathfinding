@@ -69,17 +69,17 @@ export default class Dstarlite {
             } else if (this.gscore.get(u) > this.rhs.get(u)) {
                 this.gscore.set(u, this.rhs.get(u));
                 this.Heap.remove(u);
-                const predeccesors = u.getNeighbors();
+                const predeccesors = u.getNeighbors(true);
                 for (const predeccesor of predeccesors) {
                     if (predeccesor.node !== this.goal) {
-                        this.rhs.set(predeccesor.node, Math.min(this.rhs.get(predeccesor.node), this.heuristic(predeccesor.node, u) + this.gscore.get(u)));
+                        this.rhs.set(predeccesor.node, Math.min(this.rhs.get(predeccesor.node), Cell.calculateCost(predeccesor.node, u) + this.gscore.get(u)));
                     }
                     this.updateVertex(predeccesor.node);
                 }
             } else {
                 const g_old = this.gscore.get(u);
                 this.gscore.set(u, Infinity);
-                const predeccesors = u.getNeighbors();
+                const predeccesors = u.getNeighbors(true);
                 predeccesors.push({node: u});
                 for (const {node: predeccesor} of predeccesors) {
                     const cost = predeccesor !== u ? Cell.calculateCost(predeccesor, u) : 0;
@@ -89,7 +89,7 @@ export default class Dstarlite {
                         }
                         let bestSuccessor;
                         let minRhs = Infinity;
-                        for (const {node: successor} of predeccesor.getNeighbors()) {
+                        for (const {node: successor} of predeccesor.getNeighbors(true)) {
                             const rhs = Cell.calculateCost(predeccesor, successor) + this.gscore.get(successor);
                             if (rhs < minRhs) {
                                 bestSuccessor = successor;
@@ -114,12 +114,12 @@ export default class Dstarlite {
 
     nextStep() {
         this.predeccesor = this.start;
-        const successors = this.start.getNeighbors();
+        const successors = this.start.getNeighbors(true);
         this.start = null; 
         for (const successor of successors) {
             if (!this.start) {
                 this.start = successor.node;
-            } else if (this.heuristic(this.predeccesor, successor.node) + this.gscore.get(successor.node) < this.heuristic(this.predeccesor, this.start) + this.gscore.get(this.start)) {
+            } else if (Cell.calculateCost(this.predeccesor, successor.node) + this.gscore.get(successor.node) < Cell.calculateCost(this.predeccesor, this.start) + this.gscore.get(this.start)) {
                 this.start = successor.node;
             }
         }
@@ -144,7 +144,7 @@ export default class Dstarlite {
         } else if (this.rhs.get(u) === c_old + this.gscore.get(u)) {
             if (u !== this.goal) {
                 this.rhs.set(u, null);
-                for (const successor of u.getNeighbors()) {
+                for (const successor of u.getNeighbors(true)) {
                     const successorCost = Cell.calculateCost(u, successor.node) + this.gscore.get(successor.node);
                     const currentRhs = this.rhs.get(u);
                     if (!currentRhs) {
@@ -164,7 +164,7 @@ export default class Dstarlite {
         this.km += this.heuristic(this.predeccesor, this.start);
         this.predeccesor = this.start;
         for (const [cell, oldTerrain] of changedCells) {
-            const neighbors = cell.getNeighbors();
+            const neighbors = cell.getNeighbors(true);
             for (const neighbor of neighbors) {
                 if (!nodeToEdgeCosts.has(cell, neighbor.node)) {
                     this.edgeCostEvaluation(cell, neighbor.node, changedCells);
