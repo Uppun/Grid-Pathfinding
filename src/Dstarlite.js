@@ -147,7 +147,7 @@ export default class Dstarlite {
                 for (const successor of u.getNeighbors(true)) {
                     const successorCost = Cell.calculateCost(u, successor.node) + this.gscore.get(successor.node);
                     const currentRhs = this.rhs.get(u);
-                    if (!currentRhs) {
+                    if (currentRhs == null) {
                         this.rhs.set(u, successorCost);
                     } else if (currentRhs > successorCost) {
                         this.rhs.set(u, successorCost);
