@@ -123,7 +123,7 @@ export default class Dstarlite {
                 this.start = successor.node;
             }
         }
-        
+
         return {x: this.start.x, y: this.start.y};
     }
 
@@ -139,10 +139,14 @@ export default class Dstarlite {
             c_old = Cell.calculateCost(oldU, v);
         }
         if (c_old > Cell.calculateCost(u, v)) {
+            console.groupCollapsed();
+            console.log("c_old: " + c_old);
+            console.log("new cost: " + Cell.calculateCost(u, v));
+            console.groupEnd();
             if (u !== this.goal) {
-                this.rhs.set(u, Math.min(this.rhs.get(u), Cell.calculateCost(u, v) + this.gscore.get(u)));
+                this.rhs.set(u, Math.min(this.rhs.get(u), Cell.calculateCost(u, v) + this.gscore.get(v)));
             }
-        } else if (this.rhs.get(u) === c_old + this.gscore.get(u)) {
+        } else if (this.rhs.get(u) === c_old + this.gscore.get(v)) {
             if (u !== this.goal) {
                 this.rhs.set(u, null);
                 for (const successor of u.getNeighbors(true)) {

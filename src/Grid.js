@@ -24,7 +24,7 @@ export default class Grid {
         for (const cell of cells) {
             const newCell = this.grid[cell.y][cell.x];
             if (cell.terrain !== newCell.terrain) {
-                changedCells.set(newCell, cell.terrain);
+                changedCells.set(cell, cell.terrain);
             }
             cell.terrain = newCell.terrain;
         }
