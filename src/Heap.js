@@ -42,6 +42,21 @@ export default class Heap {
         this.buildMinHeap();
     }
 
+    filterUp(index) {
+        let parent = index;
+        
+        while(parent > 0) {
+            parent = Math.floor((parent - 1)/2);
+
+            if (this.compare(this.heap[index].key, this.heap[parent].key) < 0) {
+                this.swap(index, parent);
+                index = parent;
+            } else {
+                break;
+            }
+        }
+    }
+
     minHeapify(position) {
         if (position >= this.heap.length) {
             return;
@@ -67,7 +82,7 @@ export default class Heap {
     }
 
     buildMinHeap() { 
-        const lastParent = Math.floor((this.heap.length - 2) / 2);
+        const lastParent = Math.floor((this.heap.length - 1) / 2);
 
         for (let i = lastParent; i >= 0; i--) {
             this.minHeapify(i);
@@ -84,7 +99,7 @@ export default class Heap {
     insert(node, key) {
         this.heap.push({node, key});
         this._nodeIndices.set(node, this.heap.length - 1);
-        this.checkHeap(this.heap.length - 1);
+        this.filterUp(this.heap.length - 1);
     }
 
     compare(a, b) {
@@ -113,11 +128,13 @@ export default class Heap {
             return;
         }
 
-        const lastElement = this.heap.pop();
-        this._nodeIndices.set(lastElement.node, index);
-        this._nodeIndices.delete(this.heap[index].node)
-        this.heap[index] = lastElement;
-        this.checkHeap(this.heap.length - 1);
+        this.swap(index, this.heap.length - 1);
+        this._nodeIndices.delete(this.heap.pop().node);
+        if (index === 0 || this.compare(this.heap[Math.floor((index-1)/2)].key, this.heap[index].key) < 0) {
+            this.minHeapify(index);
+        } else {
+            this.filterUp(index);
+        }
     }
 
     swap(a, b) {
