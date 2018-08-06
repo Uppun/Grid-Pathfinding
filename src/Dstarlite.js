@@ -123,6 +123,7 @@ export default class Dstarlite {
                 this.start = successor.node;
             }
         }
+        
         return {x: this.start.x, y: this.start.y};
     }
 

@@ -173,7 +173,9 @@ class A_store extends ReduceStore {
                     stage = 'DSTAR_STEP';
 
                     visibleCells = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid);
-                    DSL.updateCost(visibleCells.changedCells);
+                    if (visibleCells.changedCells.size >= 1) {
+                        DSL.updateCost(visibleCells.changedCells);
+                    }
                 } else {
                     stage = 'RESET';
                     pathGrid = revealedGrid;

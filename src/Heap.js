@@ -108,13 +108,14 @@ export default class Heap {
         if (index == null) {
             return;
         }
-        if (index === 0) {
-            this.heap = [];
-            this._nodeIndices.clear();
+        if (index === this.heap.length - 1) {
+            this._nodeIndices.delete(this.heap.pop().node);
             return;
         }
+
         const lastElement = this.heap.pop();
         this._nodeIndices.set(lastElement.node, index);
+        this._nodeIndices.delete(this.heap[index].node)
         this.heap[index] = lastElement;
         this.checkHeap(this.heap.length - 1);
     }
