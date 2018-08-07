@@ -11,14 +11,9 @@ export default class Heap {
     }
 
     extractRoot() {
-        this.swap(0, this.heap.length - 1);
-
-        const node = this.heap.pop();
-
-        this._nodeIndices.delete(node);
-        this.minHeapify(0);
-
-        return node; 
+        const root = this.top();
+        this.remove(root.node);
+        return root;
     }
 
     top() {
