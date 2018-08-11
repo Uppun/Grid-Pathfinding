@@ -7,6 +7,12 @@ export default class Grid {
         this._initializeGrid();
     }
 
+    *[Symbol.iterator]() {
+        for (let y = 0; y < this.height; y++) {
+            yield* this.grid[y];
+        }
+    }
+
     clone() {
         const newGrid = new Grid(this.width, this.height);
 

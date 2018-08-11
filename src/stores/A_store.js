@@ -90,7 +90,7 @@ class A_store extends ReduceStore {
                     path: null, 
                     visibleCells: null, 
                     seenCells: null,
-                    DSL: null,
+                    dsl: null,
                 };
             }
 
@@ -155,17 +155,16 @@ class A_store extends ReduceStore {
 
             case ActionTypes.DSTARLITE: {
                 const {player, end, pathGrid} = state;
-                const {grid} = pathGrid;
-                const DSL = new Dstarlite(grid[player.y][player.x], grid[end.y][end.x], Cell.heuristic);
-                DSL.beginPathfinding();
+                const dsl = new Dstarlite(pathGrid.getCell(player.x, player.y), pathGrid.getCell(end.x, end.y), Cell.heuristic);
+                dsl.beginPathfinding();
 
-                return {...state, DSL, stage: 'DSTAR_STEP'};
+                return {...state, dsl, stage: 'DSTAR_STEP'};
             }
 
             case ActionTypes.DSTAR_STEP: {
-                const {DSL, seenCells, revealedGrid, end} = state;
+                const {dsl, seenCells, revealedGrid, end} = state;
                 let {pathGrid} = state;
-                const nextLocation = DSL.nextStep();
+                const nextLocation = dsl.nextStep();
                 let stage;
                 let visibleCells;
 
@@ -174,7 +173,7 @@ class A_store extends ReduceStore {
 
                     visibleCells = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid);
                     if (visibleCells.changedCells.size >= 1) {
-                        DSL.updateCost(visibleCells.changedCells);
+                        dsl.updateCost(visibleCells.changedCells);
                     }
                 } else {
                     stage = 'RESET';
@@ -188,7 +187,7 @@ class A_store extends ReduceStore {
                     pathGrid,
                     visibleCells,
                     seenCells,
-                    DSL,
+                    dsl,
                 }
             }
 

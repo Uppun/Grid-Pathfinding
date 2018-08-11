@@ -71,7 +71,7 @@ class PathfinderGrid extends Component {
         GridActions.generateFog();
     }
 
-    handleDstarClick = () => {
+    handleDstarClick() {
         GridActions.dstarlite();
     }
 

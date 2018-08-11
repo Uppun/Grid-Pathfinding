@@ -3,7 +3,7 @@ import Cell from './Cell';
 
 export default class Dstarlite {
     constructor(start, goal, heuristic) {
-        this.Heap = new Heap();
+        this.heap = new Heap();
         this.km = 0;
         this.rhs = new Map();
         this.gscore = new Map();
@@ -13,16 +13,14 @@ export default class Dstarlite {
     }
 
     initialize() {
-        const grid = this.goal.grid.grid;
-        for (const row of grid) {
-            for (const column of row) {
-                this.gscore.set(column, Infinity);
-                this.rhs.set(column, Infinity);
-            }
+        const grid = this.goal.grid;
+        for (const cell of grid) {
+            this.gscore.set(cell, Infinity);
+            this.rhs.set(cell, Infinity);
         }
 
         this.rhs.set(this.goal, 0);
-        this.Heap.insert(this.goal, this.calculateKey(this.goal));
+        this.heap.insert(this.goal, this.calculateKey(this.goal));
     }
 
     calculateKey(node) {
@@ -34,14 +32,10 @@ export default class Dstarlite {
     }
 
     compareKeys(key1, key2) {
-        if (key1[0] > key2[0] || (key1[0] === key2[0] && key1[1] > key2[1])) {
-            return 1;
-        }
-        if (key1[0] === key2[0] && key1[1] === key2[1]) {
-            return 0;
-        }
-
-        return -1;
+        if (key1[0] === key2[0]) {
+            return key1[1] - key2[1];
+          }
+        return key1[0] - key2[0];
     }
 
     updateVertex(u) {
@@ -53,18 +47,18 @@ export default class Dstarlite {
             this.rhs.set(u, rhs);
         }
 
-        this.Heap.remove(u);
+        this.heap.remove(u);
 
         if (this.gscore.get(u) !== this.rhs.get(u)) {
-            this.Heap.insert(u, this.calculateKey(u));
+            this.heap.insert(u, this.calculateKey(u));
         }
     }
 
     computeShortestPath() {
-        while (this.compareKeys(this.Heap.topKey(), this.calculateKey(this.start)) < 0 || this.rhs.get(this.start) !== this.gscore.get(this.start)) {
-            const {node: u, key: k_old} = this.Heap.extractRoot();
+        while (this.compareKeys(this.heap.topKey(), this.calculateKey(this.start)) < 0 || this.rhs.get(this.start) !== this.gscore.get(this.start)) {
+            const {node: u, key: k_old} = this.heap.extractRoot();
             if (this.compareKeys(k_old, this.calculateKey(u)) < 0) {
-                this.Heap.insert(u, this.calculateKey(u));
+                this.heap.insert(u, this.calculateKey(u));
             } else if (this.gscore.get(u) > this.rhs.get(u)) {
                 this.gscore.set(u, this.rhs.get(u));
                 for (const {node} of u.getNeighbors(true)) {
@@ -104,8 +98,8 @@ export default class Dstarlite {
         this.last = this.start;
 
         for (const [cell] of changedCells) {
+            this.updateVertex(cell);
             for (const neighbor of cell.getNeighbors(true)) {
-                this.updateVertex(cell);
                 this.updateVertex(neighbor.node);
             }
         }
