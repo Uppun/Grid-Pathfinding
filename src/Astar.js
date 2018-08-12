@@ -10,7 +10,7 @@ export default function A_star(start, goal, heuristic) {
     gScore.set(start, 0);
 
     while (openNodes.length > 0) {
-        const root = openNodes.extractRoot();
+        const root = openNodes.pop();
         const current = root.node;
         if (current === goal) {
             return reconstructPath(cameFrom, current);

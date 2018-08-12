@@ -106,7 +106,6 @@ class PathfinderGrid extends Component {
         const canGenerate = stage === 'WALL';
 
         const stageLabel = STAGE_LABELS[stage];
-
         return(
             <div>
                 <div className="grid">
@@ -120,7 +119,7 @@ class PathfinderGrid extends Component {
                                   type = 'end';
                                 }
                                 let fogClassName;
-                                if (visibleCells && !visibleCells.visibleCells.has(cell)) {
+                                if (visibleCells && !visibleCells.has(cell)) {
                                     if (seenCells && seenCells.has(cell)) {
                                         fogClassName = 'seen';
                                     } else {

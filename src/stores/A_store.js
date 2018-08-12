@@ -112,7 +112,7 @@ class A_store extends ReduceStore {
                 const pathGrid = new Grid(SIZE, SIZE);
                 const seenCells = new Set();
 
-                let visibleCells = updateCellSets(seenCells, player, pathGrid, revealedGrid);
+                const {visibleCells} = updateCellSets(seenCells, player, pathGrid, revealedGrid);
 
                 return {
                     ...state, 
@@ -135,7 +135,7 @@ class A_store extends ReduceStore {
                 if (path.length > 0) {
                     stage = 'STEP_FOG';
 
-                    visibleCells = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid);
+                    ({visibleCells} = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid));
                     path = pathfind(nextLocation, end, pathGrid);
                 } else {
                     stage = 'RESET';
@@ -163,21 +163,22 @@ class A_store extends ReduceStore {
 
             case ActionTypes.DSTAR_STEP: {
                 const {dsl, seenCells, revealedGrid, end} = state;
-                let {pathGrid} = state;
                 const nextLocation = dsl.nextStep();
+                let {pathGrid} = state;
                 let stage;
                 let visibleCells;
+                let changedCells;
 
-                if (nextLocation.x !== end.x || nextLocation.y !== end.y) {
-                    stage = 'DSTAR_STEP';
-
-                    visibleCells = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid);
-                    if (visibleCells.changedCells.size >= 1) {
-                        dsl.updateCost(visibleCells.changedCells);
-                    }
-                } else {
+                if (nextLocation.x === end.x && nextLocation.y === end.y || nextLocation === null) {
                     stage = 'RESET';
                     pathGrid = revealedGrid;
+                } else {
+                    stage = 'DSTAR_STEP';
+
+                    ({visibleCells, changedCells} = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid));
+                    if (changedCells.size >= 1) {
+                        dsl.updateCost(changedCells);
+                    }
                 }
 
                 return {

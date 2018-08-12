@@ -55,8 +55,13 @@ export default class Dstarlite {
     }
 
     computeShortestPath() {
-        while (this.compareKeys(this.heap.topKey(), this.calculateKey(this.start)) < 0 || this.rhs.get(this.start) !== this.gscore.get(this.start)) {
-            const {node: u, key: k_old} = this.heap.extractRoot();
+        let loopCounter = 0;       
+        while (loopCounter < 1000000) {
+            if (this.compareKeys(this.heap.topKey(), this.calculateKey(this.start)) >= 0 && 
+                this.rhs.get(this.start) === this.gscore.get(this.start)) {
+                break;
+            }
+            const {node: u, key: k_old} = this.heap.pop();
             if (this.compareKeys(k_old, this.calculateKey(u)) < 0) {
                 this.heap.insert(u, this.calculateKey(u));
             } else if (this.gscore.get(u) > this.rhs.get(u)) {
@@ -70,7 +75,8 @@ export default class Dstarlite {
                 for (const {node} of predeccesors) {
                     this.updateVertex(node);
                 }
-            } 
+            }
+            loopCounter++; 
         }
     }
 
@@ -81,6 +87,9 @@ export default class Dstarlite {
     }
 
     nextStep() {
+        if (this.gscore.get(this.start) === Infinity) {
+            return null; 
+        }
         let best;
         for (const {node} of this.start.getNeighbors(true)) {
             const val = Cell.calculateCost(this.start, node) + this.gscore.get(node);

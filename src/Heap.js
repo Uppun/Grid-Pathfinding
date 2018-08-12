@@ -10,7 +10,7 @@ export default class Heap {
         return this._nodeIndices.has(node);
     }
 
-    extractRoot() {
+    pop() {
         const root = this.top();
         this.remove(root.node);
         return root;
@@ -41,7 +41,7 @@ export default class Heap {
         let parent = index;
         while(parent > 0) {
             parent = Math.floor((parent - 1)/2);
-            if (this.compare(this.heap[index].key, this.heap[parent].key) < 0) {
+            if (this.compare(index, parent) < 0) {
                 this.swap(index, parent);
                 index = parent;
             } else {
@@ -59,11 +59,11 @@ export default class Heap {
         const leftChild = 2 * position + 1;
         const rightChild = 2 * position + 2;
             
-        if (leftChild < this.heap.length && this.compare(this.heap[leftChild].key, this.heap[smallest].key) < 0) {
+        if (leftChild < this.heap.length && this.compare(leftChild, smallest) < 0) {
             smallest = leftChild;
         }
 
-        if (rightChild < this.heap.length && this.compare(this.heap[rightChild].key, this.heap[smallest].key) < 0) {
+        if (rightChild < this.heap.length && this.compare(rightChild, smallest) < 0) {
             smallest = rightChild;
         }
             
@@ -96,13 +96,15 @@ export default class Heap {
     }
 
     compare(a, b) {
-        if (Array.isArray(a) && Array.isArray(b)) {
-            if (a[0] > b[0] || (a[0] === b[0] && a[1] > b[1])) {
+        const aKey = this.heap[a].key;
+        const bKey = this.heap[b].key;
+        if (Array.isArray(aKey) && Array.isArray(bKey)) {
+            if (aKey[0] > bKey[0] || (aKey[0] === bKey[0] && aKey[1] > bKey[1])) {
                 return 1;
             }
             return -1;
         }
-        return a - b;
+        return aKey - bKey;
     }
 
     remove(node) {
@@ -110,15 +112,19 @@ export default class Heap {
         if (index == null) {
             return;
         }
-        if (index === this.heap.length - 1) {
-            this._nodeIndices.delete(this.heap.pop().node);
+
+        const lastIndex = this.heap.length - 1;
+
+        this.swap(index, lastIndex);
+        const item = this.heap.pop();
+        this._nodeIndices.delete(item.node);
+
+        if (index === lastIndex) {
             return;
         }
 
-        this.swap(index, this.heap.length - 1);
-        const item = this.heap.pop();
-        this._nodeIndices.delete(item.node);
-        if (index === 0 || this.compare(this.heap[Math.floor((index-1)/2)].key, this.heap[index].key) < 0) {
+        const parentIndex = Math.floor((index - 1)/2);
+        if (index === 0 || this.compare(parentIndex, index) < 0) {
             this.minHeapify(index);
         } else {
             this.filterUp(index);
@@ -126,6 +132,9 @@ export default class Heap {
     }
 
     swap(a, b) {
+        if (a === b) {
+            return;
+        }
         const temp = this.heap[a];
         this.heap[a] = this.heap[b];
         this.heap[b] = temp;
