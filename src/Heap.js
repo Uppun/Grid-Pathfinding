@@ -33,14 +33,13 @@ export default class Heap {
         if (nodeIndex != null) {
             this.heap[nodeIndex].key = key;
         }
-
         this.buildMinHeap();
     }
 
     filterUp(index) {
         let parent = index;
         while(parent > 0) {
-            parent = Math.floor((parent - 1)/2);
+            parent = Math.floor((parent - 1) / 2);
             if (this.compare(index, parent) < 0) {
                 this.swap(index, parent);
                 index = parent;
@@ -99,10 +98,10 @@ export default class Heap {
         const aKey = this.heap[a].key;
         const bKey = this.heap[b].key;
         if (Array.isArray(aKey) && Array.isArray(bKey)) {
-            if (aKey[0] > bKey[0] || (aKey[0] === bKey[0] && aKey[1] > bKey[1])) {
-                return 1;
+            if (aKey[0] === bKey[0]) {
+                return aKey[1] - bKey[1];
             }
-            return -1;
+            return aKey[0] - bKey[0];
         }
         return aKey - bKey;
     }
@@ -123,7 +122,7 @@ export default class Heap {
             return;
         }
 
-        const parentIndex = Math.floor((index - 1)/2);
+        const parentIndex = Math.floor((index - 1) / 2);
         if (index === 0 || this.compare(parentIndex, index) < 0) {
             this.minHeapify(index);
         } else {

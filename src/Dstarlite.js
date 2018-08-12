@@ -34,7 +34,7 @@ export default class Dstarlite {
     compareKeys(key1, key2) {
         if (key1[0] === key2[0]) {
             return key1[1] - key2[1];
-          }
+        }
         return key1[0] - key2[0];
     }
 
@@ -57,6 +57,7 @@ export default class Dstarlite {
     computeShortestPath() {
         let loopCounter = 0;       
         while (loopCounter < 1000000) {
+            loopCounter++;
             if (this.compareKeys(this.heap.topKey(), this.calculateKey(this.start)) >= 0 && 
                 this.rhs.get(this.start) === this.gscore.get(this.start)) {
                 break;
@@ -76,7 +77,6 @@ export default class Dstarlite {
                     this.updateVertex(node);
                 }
             }
-            loopCounter++; 
         }
     }
 

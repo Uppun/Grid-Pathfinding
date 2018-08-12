@@ -155,7 +155,9 @@ class A_store extends ReduceStore {
 
             case ActionTypes.DSTARLITE: {
                 const {player, end, pathGrid} = state;
-                const dsl = new Dstarlite(pathGrid.getCell(player.x, player.y), pathGrid.getCell(end.x, end.y), Cell.heuristic);
+                const start = pathGrid.getCell(player.x, player.y);
+                const goal = pathGrid.getCell(end.x, end.y);
+                const dsl = new Dstarlite(start, goal, Cell.heuristic);
                 dsl.beginPathfinding();
 
                 return {...state, dsl, stage: 'DSTAR_STEP'};
@@ -169,7 +171,7 @@ class A_store extends ReduceStore {
                 let visibleCells;
                 let changedCells;
 
-                if (nextLocation.x === end.x && nextLocation.y === end.y || nextLocation === null) {
+                if ((nextLocation.x === end.x && nextLocation.y === end.y) || nextLocation === null) {
                     stage = 'RESET';
                     pathGrid = revealedGrid;
                 } else {
