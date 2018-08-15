@@ -7,7 +7,7 @@ import Astar from '../Astar';
 import mapGenerator from '../mapGenerator';
 import Dstarlite from '../Dstarlite';
 
-const SIZE = 50; 
+const SIZE = 25; 
 
 function pathfind(player, end, pathGrid) {
     const start = pathGrid.getCell(player.x, player.y);
@@ -70,7 +70,7 @@ class A_store extends ReduceStore {
 
             case ActionTypes.GENERATE: {
                 const {player, end} = state;
-                const pathGrid = mapGenerator(player, end, new Grid(SIZE, SIZE));
+                const pathGrid = mapGenerator(player, end, state.pathGrid);
                 return {...state, pathGrid};
             }
             
@@ -107,9 +107,8 @@ class A_store extends ReduceStore {
             }
 
             case ActionTypes.GENERATE_FOG: {
-                const {player, end} = state;
-                const revealedGrid = mapGenerator(player, end, new Grid(SIZE, SIZE));
-                const pathGrid = new Grid(SIZE, SIZE);
+                const {player, end, pathGrid} = state;
+                const revealedGrid = mapGenerator(player, end, pathGrid);
                 const seenCells = new Set();
 
                 const {visibleCells} = updateCellSets(seenCells, player, pathGrid, revealedGrid);

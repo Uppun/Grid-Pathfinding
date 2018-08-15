@@ -57,7 +57,6 @@ export default class Heap {
         let smallest = position;
         const leftChild = 2 * position + 1;
         const rightChild = 2 * position + 2;
-            
         if (leftChild < this.heap.length && this.compare(leftChild, smallest) < 0) {
             smallest = leftChild;
         }
@@ -85,7 +84,7 @@ export default class Heap {
         while (position > 0) {
             position = Math.floor((position - 1) / 2);
             this.minHeapify(position);
-        }
+        }   
     }
 
     insert(node, key) {
@@ -115,8 +114,12 @@ export default class Heap {
         const lastIndex = this.heap.length - 1;
 
         this.swap(index, lastIndex);
+        console.log(this.heap)
         const item = this.heap.pop();
         this._nodeIndices.delete(item.node);
+        console.log('removed')
+        console.log(item.node)
+        console.log(this.heap[0])
 
         if (index === lastIndex) {
             return;
