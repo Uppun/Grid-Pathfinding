@@ -6,7 +6,7 @@ export default class Heap {
         return this.heap.length;
     }
     
-    checkNode(node) {
+    has(node) {
         return this._nodeIndices.has(node);
     }
 
@@ -114,12 +114,8 @@ export default class Heap {
         const lastIndex = this.heap.length - 1;
 
         this.swap(index, lastIndex);
-        console.log(this.heap)
         const item = this.heap.pop();
         this._nodeIndices.delete(item.node);
-        console.log('removed')
-        console.log(item.node)
-        console.log(this.heap[0])
 
         if (index === lastIndex) {
             return;

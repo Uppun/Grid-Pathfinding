@@ -8,13 +8,7 @@ export default function A_star(start, goal, heuristic) {
 
     openNodes.insert(start, heuristic(start, goal));
     gScore.set(start, 0);
-    let loopCounter = 0;
     while (openNodes.length > 0) {
-        loopCounter++;
-        if (loopCounter > 50) {
-            console.log("oh no something is fucked")
-            return null;
-        }
         const root = openNodes.pop();
         const current = root.node;
 
@@ -29,7 +23,9 @@ export default function A_star(start, goal, heuristic) {
                 continue;
             }
 
-            openNodes.insert(neighbor.node, Infinity);
+            if (!openNodes.has(neighbor.node)) {
+                openNodes.insert(neighbor.node, Infinity);
+            }
 
             const tentativeScore = getOrDefault(gScore, current, Infinity) + neighbor.cost;
 
