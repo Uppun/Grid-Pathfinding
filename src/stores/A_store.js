@@ -5,8 +5,9 @@ import Grid from '../Grid';
 import Cell from '../Cell';
 import Astar from '../Astar';
 import mapGenerator from '../mapGenerator';
+import Dstarlite from '../Dstarlite';
 
-const SIZE = 50; 
+const SIZE = 25; 
 
 function pathfind(player, end, pathGrid) {
     const start = pathGrid.getCell(player.x, player.y);
@@ -19,13 +20,13 @@ function pathfind(player, end, pathGrid) {
 
 function updateCellSets(seenCells, location, pathGrid, revealedGrid) {
     const visibleCells = pathGrid.getVisible(location.x, location.y);
-    revealedGrid.copyCells(visibleCells);
+    const changedCells = revealedGrid.copyCells(visibleCells);
 
     for (const cell of visibleCells) {
         seenCells.add(cell);
     }
 
-    return visibleCells;
+    return {visibleCells, changedCells};
 }
 
 
@@ -69,7 +70,7 @@ class A_store extends ReduceStore {
 
             case ActionTypes.GENERATE: {
                 const {player, end} = state;
-                const pathGrid = mapGenerator(player, end, new Grid(SIZE, SIZE));
+                const pathGrid = mapGenerator(player, end, state.pathGrid);
                 return {...state, pathGrid};
             }
             
@@ -89,6 +90,7 @@ class A_store extends ReduceStore {
                     path: null, 
                     visibleCells: null, 
                     seenCells: null,
+                    dsl: null,
                 };
             }
 
@@ -105,37 +107,34 @@ class A_store extends ReduceStore {
             }
 
             case ActionTypes.GENERATE_FOG: {
-                const {player, end} = state;
-                const revealedGrid = mapGenerator(player, end, new Grid(SIZE, SIZE));
-                const pathGrid = new Grid(SIZE, SIZE);
+                const {player, end, pathGrid} = state;
+                const revealedGrid = mapGenerator(player, end, pathGrid);
                 const seenCells = new Set();
 
-                const visibleCells = updateCellSets(seenCells, player, pathGrid, revealedGrid);
-
-                const path = pathfind(player, end, pathGrid);
+                const {visibleCells} = updateCellSets(seenCells, player, pathGrid, revealedGrid);
 
                 return {
                     ...state, 
                     pathGrid, 
                     revealedGrid,
-                    path, 
-                    stage: 'STEP_FOG', 
+                    stage: 'SELECT_ALGORITHM', 
                     visibleCells, 
                     seenCells
                 };
             }
 
             case ActionTypes.STEP_FOG: {
-                let [nextLocation, ...path] = state.path;
-                const {revealedGrid, end, seenCells} = state;
+                const {revealedGrid, end, seenCells, player} = state;
                 let {pathGrid} = state;
+                let path = pathfind(player, end, pathGrid);
+                let nextLocation = path.shift();
                 let stage;
                 let visibleCells;
 
                 if (path.length > 0) {
                     stage = 'STEP_FOG';
 
-                    visibleCells = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid);
+                    ({visibleCells} = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid));
                     path = pathfind(nextLocation, end, pathGrid);
                 } else {
                     stage = 'RESET';
@@ -150,6 +149,47 @@ class A_store extends ReduceStore {
                     pathGrid, 
                     visibleCells, 
                     seenCells
+                }
+            }
+
+            case ActionTypes.DSTARLITE: {
+                const {player, end, pathGrid} = state;
+                const start = pathGrid.getCell(player.x, player.y);
+                const goal = pathGrid.getCell(end.x, end.y);
+                const dsl = new Dstarlite(start, goal, Cell.heuristic);
+                dsl.beginPathfinding();
+
+                return {...state, dsl, stage: 'DSTAR_STEP'};
+            }
+
+            case ActionTypes.DSTAR_STEP: {
+                const {dsl, seenCells, revealedGrid, end} = state;
+                const nextLocation = dsl.nextStep();
+                let {pathGrid} = state;
+                let stage;
+                let visibleCells;
+                let changedCells;
+
+                if ((nextLocation.x === end.x && nextLocation.y === end.y) || nextLocation === null) {
+                    stage = 'RESET';
+                    pathGrid = revealedGrid;
+                } else {
+                    stage = 'DSTAR_STEP';
+
+                    ({visibleCells, changedCells} = updateCellSets(seenCells, nextLocation, pathGrid, revealedGrid));
+                    if (changedCells.size >= 1) {
+                        dsl.updateCost(changedCells);
+                    }
+                }
+
+                return {
+                    ...state,
+                    stage,
+                    player: {x: nextLocation.x, y: nextLocation.y},
+                    pathGrid,
+                    visibleCells,
+                    seenCells,
+                    dsl,
                 }
             }
 

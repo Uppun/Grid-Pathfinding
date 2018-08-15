@@ -8,4 +8,6 @@ export default {
     STEP: 'STEP',
     GENERATE_FOG: 'GENERATE_FOG',
     STEP_FOG: 'STEP_FOG',
+    DSTARLITE: 'DSTARLITE',
+    DSTAR_STEP: 'DSTAR_STEP',
 }

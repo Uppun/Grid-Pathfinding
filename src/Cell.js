@@ -50,25 +50,47 @@ export default class Cell {
         }
     }
 
-    getNeighbors() {
+    static calculateCost(a, b) {
+        let cost = 0;
+
+        if (a === b) {
+            return cost; 
+        }
+        
+        if (a.x !== b.x && a.y !== b.y) {
+            cost += 1.5;
+        } else {
+            cost += 1;
+        }
+
+        if (a.terrain !== b.terrain) {
+            if (a.terrain === 'mountain' && b.terrain === 'normal') {
+                cost = cost * .5;
+            }
+
+            if (a.terrain === 'normal' && b.terrain === 'mountain') {
+                cost = cost * 3;
+            }
+
+            if (b.terrain === 'wall') {
+                cost = Infinity;
+            }
+        }
+
+        return cost;
+    }
+
+    getNeighbors(keepWalls) {
         const neighbors = [];
 
         for (const offset of neighborOffsets) {
             const neighbor = this.grid.getCell(this.x + offset.coords[0], this.y + offset.coords[1]);
 
-            if (!neighbor || neighbor.terrain === Cell.Terrain.WALL) {
+            if (!neighbor || (neighbor.terrain === Cell.Terrain.WALL && !keepWalls)) {
                 continue;
             }
 
-            let cost = offset.cost;
-
-            if (neighbor.terrain !== this.terrain) {
-                if (neighbor.terrain === Cell.Terrain.NORMAL) {
-                    cost = offset.cost * 0.5;
-                } else {
-                    cost = offset.cost * 3;
-                }
-            }
+            const cost = Cell.calculateCost(this, neighbor);
 
             neighbors.push({node: neighbor, cost});
         }

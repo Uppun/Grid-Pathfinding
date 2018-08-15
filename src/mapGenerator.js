@@ -1,9 +1,10 @@
 import Cell from './Cell';
 
-export default function mapGenerator(start, goal, grid) {
+export default function mapGenerator(start, goal, pathGrid) {
     const holeCoverage = Math.random() * .35 + .15;
     const mountainCoverage = Math.random() * .1 + .3;
-    
+    const grid = pathGrid.clone();
+
     while (shouldContinue(grid, mountainCoverage, calculateMountains)) {
         const mountY = Math.floor(Math.random() * grid.height);
         const mountX = Math.floor(Math.random() * grid.width);
@@ -14,7 +15,7 @@ export default function mapGenerator(start, goal, grid) {
         for (let y = mountY - mountRadius - 1; y <= mountY + mountRadius +1; y++) {
             for (let x = mountX - mountRadius - 1; x <= mountX + mountRadius +1; x++) {
                 const cell = grid.getCell(x, y);
-                if (!cell || !pointInCircle(x, y, mountX, mountY, mountRadius)) {
+                if (!cell || !pointInCircle(x, y, mountX, mountY, mountRadius) || cell.terrain === 'wall') {
                     continue;
                 }
 

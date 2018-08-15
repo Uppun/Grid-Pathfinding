@@ -61,4 +61,16 @@ export default {
             type: ActionTypes.STEP_FOG,
         });
     },
+
+    dstarlite() {
+        Dispatcher.dispatch({
+            type: ActionTypes.DSTARLITE,
+        });
+    }, 
+
+    dstarStep() {
+        Dispatcher.dispatch({
+            type: ActionTypes.DSTAR_STEP,
+        });
+    },
 }

@@ -7,6 +7,12 @@ export default class Grid {
         this._initializeGrid();
     }
 
+    *[Symbol.iterator]() {
+        for (let y = 0; y < this.height; y++) {
+            yield* this.grid[y];
+        }
+    }
+
     clone() {
         const newGrid = new Grid(this.width, this.height);
 
@@ -20,9 +26,16 @@ export default class Grid {
     }
 
     copyCells(cells) {
+        const changedCells = new Map();
         for (const cell of cells) {
-            cell.terrain = this.grid[cell.y][cell.x].terrain;
+            const newCell = this.grid[cell.y][cell.x];
+            if (cell.terrain !== newCell.terrain) {
+                changedCells.set(cell, cell.terrain);
+            }
+            cell.terrain = newCell.terrain;
         }
+
+        return changedCells;
     }
 
     _initializeGrid() {

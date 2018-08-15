@@ -8,10 +8,10 @@ export default function A_star(start, goal, heuristic) {
 
     openNodes.insert(start, heuristic(start, goal));
     gScore.set(start, 0);
-
     while (openNodes.length > 0) {
-        const root = openNodes.extractRoot();
+        const root = openNodes.pop();
         const current = root.node;
+
         if (current === goal) {
             return reconstructPath(cameFrom, current);
         }
@@ -23,14 +23,15 @@ export default function A_star(start, goal, heuristic) {
                 continue;
             }
 
-            openNodes.insert(neighbor.node, Infinity);
+            if (!openNodes.has(neighbor.node)) {
+                openNodes.insert(neighbor.node, Infinity);
+            }
 
             const tentativeScore = getOrDefault(gScore, current, Infinity) + neighbor.cost;
 
             if (tentativeScore >= getOrDefault(gScore, neighbor.node, Infinity)) {
                 continue;
             }
-
             cameFrom.set(neighbor.node, current);
             gScore.set(neighbor.node, tentativeScore);
             openNodes.setKey(neighbor.node, tentativeScore + heuristic(neighbor.node, goal));
