@@ -7,7 +7,7 @@ import Astar from '../Astar';
 import mapGenerator from '../mapGenerator';
 import Dstarlite from '../Dstarlite';
 
-const SIZE = 25; 
+const SIZE = 50; 
 
 function pathfind(player, end, pathGrid) {
     const start = pathGrid.getCell(player.x, player.y);
