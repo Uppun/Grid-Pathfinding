@@ -12,7 +12,7 @@ class PathfinderGrid extends Component {
     }
 
     static calculateState(prevState) {
-        return A_store.getState();
+        return {pathGrid: A_store.getState().pathGrid, stage: A_store.getState().stage}; 
     }
 
     shouldComponentUpdate(nextProps, nextState) {

@@ -39,3 +39,13 @@
 .unknown {
     filter: brightness(0%);
 }
+
+.end.mountain {
+    background-color: rgb(100, 34, 13);
+    filter: brightness(75%);
+}
+
+.player.mountain {
+    background-color: rgb(70, 120, 13);
+    filter: brightness(75%);
+}

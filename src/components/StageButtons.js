@@ -19,7 +19,7 @@ class StageButtons extends Component {
     }
     
     static calculateState(prevState) {
-        return A_store.getState();
+        return {stage: A_store.getState().stage};
     }
     
     handleClick = () => {

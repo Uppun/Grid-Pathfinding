@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
-import Cell from '../Cell';
 import A_store from '../stores/A_store';
 import {Container} from 'flux/utils';
 import '../main.css';
@@ -66,7 +65,7 @@ class CellComponent extends Component {
             {
                 player: type === 'player', 
                 end: type === 'end', 
-                mountain: terrain === Cell.Terrain.MOUNTAIN && type === 'normal',
+                mountain: terrain === 'mountain',
             }
         );
 
