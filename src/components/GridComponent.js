@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import A_store from '../stores/A_store';
 import {Container} from 'flux/utils';
 import Cell from './CellComponent';
-import StageButtons from './StageButtons';
 import GridActions from '../actions/GridActions';
 import '../main.css';
 
@@ -56,16 +55,13 @@ class PathfinderGrid extends Component {
     render() {
         const {pathGrid} = this.state;
         return(
-            <div>
-                <div className="grid">
-                    {pathGrid.grid.map((row, rowIndex) =>
-                        <div className="grid-row" key={rowIndex}>
-                            {row.map((cell, columnIndex) => {
-                                return (<Cell key={columnIndex} handleClick={this.handleCellClick} x={cell.x} y={cell.y} />);
-                            })}
-                        </div>)}
-                </div>
-                <StageButtons />
+            <div className="grid">
+                {pathGrid.grid.map((row, rowIndex) =>
+                    <div className="grid-row" key={rowIndex}>
+                        {row.map((cell, columnIndex) => {
+                            return (<Cell key={columnIndex} handleClick={this.handleCellClick} x={cell.x} y={cell.y} />);
+                        })}
+                    </div>)}
             </div>
         )
     }
