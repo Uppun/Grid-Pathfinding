@@ -60,7 +60,7 @@
     filter: brightness(75%);
 }
 
-.buttonContentHolder {
+.button-content-holder {
     margin: auto;
     max-width: 500px;
     width: 100%;
@@ -71,8 +71,8 @@
     filter: drop-shadow(0 0 0.75rem black);
 }
 
-.buttonBarPad {
-    flex: .75;
+.button-text-holder {
+    flex: 1;
     text-align: center;
 }
 
@@ -83,7 +83,7 @@
     width: 100%;
 }
 
-.buttonBar {
+.button-bar {
     text-align: center;
     flex: 1;
 }

@@ -99,9 +99,9 @@ class StageButtons extends Component {
         const stageMessage = STAGE_INFO[stage];
         return (
             <div className='tool-bar-wrapper'>
-                <div className='buttonContentHolder'>
-                    <div className='buttonBarPad'>{stageMessage}</div>
-                    <div className='buttonBar'>
+                <div className='button-content-holder'>
+                    <div className='button-text-holder'>{stageMessage}</div>
+                    <div className='button-bar'>
                         {stageLabel ? <button className="button" onClick={this.handleClick}>{stageLabel}</button> : null}
                         {stage === 'SELECT_ALGORITHM' ? <button className="button" onClick={this.handleDstarClick}>D*lite Pathfind</button> : null}
                         {canGenerate ? <button className="button" onClick={this.handleGenerateClick}>Generate</button> : null}
