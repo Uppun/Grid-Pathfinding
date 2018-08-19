@@ -52,16 +52,32 @@ class PathfinderGrid extends Component {
         }
     }
 
+    onMouseDown = (event) => {
+        const startY = event.pageY;
+
+        const CB = (e) => {
+            window.scrollTo(0, document.body.scrollTop + (startY - e.clientY) * 2);
+        }
+
+        document.addEventListener('mousemove', CB, false);
+        document.addEventListener('mouseup', (e) => {
+            document.removeEventListener('mousemove', CB, false);
+        }, true);
+
+    }
+
     render() {
         const {pathGrid} = this.state;
         return(
-            <div className="grid">
-                {pathGrid.grid.map((row, rowIndex) =>
-                    <div className="grid-row" key={rowIndex}>
-                        {row.map((cell, columnIndex) => {
-                            return (<Cell key={columnIndex} handleClick={this.handleCellClick} x={cell.x} y={cell.y} />);
-                        })}
-                    </div>)}
+            <div className='grid-container' onMouseDown={this.onMouseDown}>
+                <div className='grid'>
+                    {pathGrid.grid.map((row, rowIndex) =>
+                        <div className='grid-row' key={rowIndex}>
+                            {row.map((cell, columnIndex) => {
+                                return (<Cell key={columnIndex} handleClick={this.handleCellClick} x={cell.x} y={cell.y} />);
+                            })}
+                        </div>)}
+                </div>
             </div>
         )
     }
