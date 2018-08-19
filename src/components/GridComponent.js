@@ -54,7 +54,7 @@ class PathfinderGrid extends Component {
 
     onMouseDown = (event) => {
         const CB = (e) => {
-            window.scrollTo(0, window.scrollY + e.movementY);
+            window.scrollTo(window.scrollX - e.movementX, window.scrollY - e.movementY);
         }
 
         document.addEventListener('mousemove', CB, false);
