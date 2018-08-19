@@ -1,5 +1,6 @@
 .App {
     user-select: none;
+    margin: 0px;
 }
 .grid-container {
     max-height: 100%;
@@ -60,12 +61,11 @@
 }
 
 .buttonContentHolder {
-    position: fixed;
-    bottom: 0;
+    margin: auto;
+    max-width: 500px;
     width: 100%;
     height: 50px;
     background-color: white;
-    z-index: 2;
     display: flex;
     flex-direction: column;
     filter: drop-shadow(0 0 0.75rem black);
@@ -74,6 +74,13 @@
 .buttonBarPad {
     flex: .75;
     text-align: center;
+}
+
+.tool-bar-wrapper {
+    position: fixed;
+    bottom: 0;
+    z-index: 1;
+    width: 100%;
 }
 
 .buttonBar {

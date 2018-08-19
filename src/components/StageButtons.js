@@ -98,15 +98,16 @@ class StageButtons extends Component {
         const stageLabel = STAGE_LABELS[stage];
         const stageMessage = STAGE_INFO[stage];
         return (
-            <div className='buttonContentHolder'>
-                <div className='buttonBarPad'>{stageMessage}</div>
-                <div className='buttonBar'>
-                    {stageLabel ? <button className="button" onClick={this.handleClick}>{stageLabel}</button> : null}
-                    {stage === 'SELECT_ALGORITHM' ? <button className="button" onClick={this.handleDstarClick}>D*lite Pathfind</button> : null}
-                    {canGenerate ? <button className="button" onClick={this.handleGenerateClick}>Generate</button> : null}
-                    {canGenerate ? <button className="button" onClick={this.handleGenerateFogClick}>Generate Fog Map</button> : null}
+            <div className='tool-bar-wrapper'>
+                <div className='buttonContentHolder'>
+                    <div className='buttonBarPad'>{stageMessage}</div>
+                    <div className='buttonBar'>
+                        {stageLabel ? <button className="button" onClick={this.handleClick}>{stageLabel}</button> : null}
+                        {stage === 'SELECT_ALGORITHM' ? <button className="button" onClick={this.handleDstarClick}>D*lite Pathfind</button> : null}
+                        {canGenerate ? <button className="button" onClick={this.handleGenerateClick}>Generate</button> : null}
+                        {canGenerate ? <button className="button" onClick={this.handleGenerateFogClick}>Generate Fog Map</button> : null}
+                    </div>
                 </div>
-                <div className='buttonBarPad' />
             </div>
         )
     }
