@@ -68,10 +68,12 @@
     z-index: 2;
     display: flex;
     flex-direction: column;
+    filter: drop-shadow(0 0 0.75rem black);
 }
 
 .buttonBarPad {
     flex: .75;
+    text-align: center;
 }
 
 .buttonBar {

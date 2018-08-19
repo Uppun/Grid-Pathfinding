@@ -13,8 +13,9 @@ function pathfind(player, end, pathGrid) {
     const start = pathGrid.getCell(player.x, player.y);
     const goal = pathGrid.getCell(end.x, end.y);
     const path = Astar(start, goal, Cell.heuristic);
-    path.shift();
-    
+    if (path) {
+        path.shift();
+    }
     return path; 
 }
 
@@ -51,13 +52,20 @@ class A_store extends ReduceStore {
             }
 
             case ActionTypes.ENDP: {
+                const {player} = state;
+                if (player.x === action.x && player.y === action.y) {
+                    return {...state, stage: 'ENDP'};
+                }
                 return {...state, end: {x: action.x, y: action.y}, stage: 'WALL'};
             }
 
             case ActionTypes.WALL: {
+                const {player, end} = state;
                 const {x, y} = action;
                 const pathGrid = state.pathGrid.clone();
                 const cell = pathGrid.getCell(x, y);
+                if (x === player.x && y === player.y) return state;
+                if (x === end.x && y === end.y) return state;
                 if (cell.terrain === Cell.Terrain.WALL) {
                     cell.terrain = Cell.Terrain.MOUNTAIN;
                 } else if (cell.terrain === Cell.Terrain.MOUNTAIN) {
@@ -77,11 +85,27 @@ class A_store extends ReduceStore {
             case ActionTypes.PATHFIND: {
                 const {pathGrid, player, end} = state;
                 const path = pathfind(player, end, pathGrid);
-                
-                return {...state, path, stage: 'STEP'};
+                if (path) {
+                    return {...state, path, stage: 'STEP'};
+                }
+
+                return {...state, stage: 'RESET_FAIL'};
             }
 
             case ActionTypes.RESET: {
+                return {
+                    pathGrid: new Grid(SIZE, SIZE), 
+                    player: {x: -1, y: -1},
+                    end: {x: -2, y: -2}, 
+                    stage: 'STARTP', 
+                    path: null, 
+                    visibleCells: null, 
+                    seenCells: null,
+                    dsl: null,
+                };
+            }
+
+            case ActionTypes.RESET_FAIL: {
                 return {
                     pathGrid: new Grid(SIZE, SIZE), 
                     player: {x: -1, y: -1},
@@ -127,6 +151,10 @@ class A_store extends ReduceStore {
                 const {revealedGrid, end, seenCells, player} = state;
                 let {pathGrid} = state;
                 let path = pathfind(player, end, pathGrid);
+                if (!path) {
+                    return {...state, stage: 'RESET_FAIL'};
+                }
+
                 let nextLocation = path.shift();
                 let stage;
                 let visibleCells;
@@ -165,6 +193,10 @@ class A_store extends ReduceStore {
             case ActionTypes.DSTAR_STEP: {
                 const {dsl, seenCells, revealedGrid, end} = state;
                 const nextLocation = dsl.nextStep();
+                if (!nextLocation) {
+                    return {...state, stage: 'RESET_FAIL'};
+                }
+
                 let {pathGrid} = state;
                 let stage;
                 let visibleCells;

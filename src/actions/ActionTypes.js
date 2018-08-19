@@ -10,4 +10,5 @@ export default {
     STEP_FOG: 'STEP_FOG',
     DSTARLITE: 'DSTARLITE',
     DSTAR_STEP: 'DSTAR_STEP',
+    RESET_FAIL: 'RESET_FAIL',
 }

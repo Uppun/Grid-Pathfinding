@@ -8,10 +8,23 @@ const STAGE_LABELS = {
     WALL: 'Pathfind',
     STEP: 'Next Step',
     RESET: 'Reset',
+    RESET_FAIL: 'Reset',
     SELECT_ALGORITHM: 'A* Pathfind',
     STEP_FOG: 'Next Step',
     DSTAR_STEP: 'Next Step',
   };
+
+  const STAGE_INFO = {
+      STARTP: 'Click a cell to place starting position.',
+      ENDP: 'Click a cell to place end goal.',
+      WALL: 'Click a cell to place terrain (once for wall, twice for mountain).',
+      RESET: 'Press reset to reset grid.',
+      SELECT_ALGORITHM: 'Pathfind Map with A* or D*Lite.',
+      STEP_FOG: 'Make next move',
+      DSTAR_STEP: 'Make next move',
+      STEP: 'Make next move',
+      RESET_FAIL: 'Pathfinding failed, reset to try again',
+  }
 
 class StageButtons extends Component {
     static getStores() {
@@ -38,6 +51,11 @@ class StageButtons extends Component {
     
             case 'RESET': {
                 GridActions.reset();
+                break;
+            }
+
+            case 'RESET_FAIL': {
+                GridActions.resetFail();
                 break;
             }
     
@@ -78,9 +96,10 @@ class StageButtons extends Component {
         const {stage} = this.state;
         const canGenerate = stage === 'WALL';
         const stageLabel = STAGE_LABELS[stage];
+        const stageMessage = STAGE_INFO[stage];
         return (
             <div className='buttonContentHolder'>
-                <div className='buttonBarPad' />
+                <div className='buttonBarPad'>{stageMessage}</div>
                 <div className='buttonBar'>
                     {stageLabel ? <button className="button" onClick={this.handleClick}>{stageLabel}</button> : null}
                     {stage === 'SELECT_ALGORITHM' ? <button className="button" onClick={this.handleDstarClick}>D*lite Pathfind</button> : null}
