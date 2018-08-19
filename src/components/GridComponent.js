@@ -56,7 +56,7 @@ class PathfinderGrid extends Component {
         const startY = event.pageY;
 
         const CB = (e) => {
-            window.scrollTo(0, document.body.scrollTop + (startY - e.clientY) * 2);
+            window.scrollTo(0, document.body.scrollTop + (startY - e.clientY) * 3);
         }
 
         document.addEventListener('mousemove', CB, false);
