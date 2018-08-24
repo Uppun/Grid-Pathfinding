@@ -62,6 +62,7 @@ export default class Dstarlite {
                 this.rhs.get(this.start) === this.gscore.get(this.start)) {
                 break;
             }
+            if (this.heap.top() == null) break;
             const {node: u, key: k_old} = this.heap.pop();
             if (this.compareKeys(k_old, this.calculateKey(u)) < 0) {
                 this.heap.insert(u, this.calculateKey(u));

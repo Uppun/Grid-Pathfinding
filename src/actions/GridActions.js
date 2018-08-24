@@ -44,6 +44,12 @@ export default {
         });
     },
 
+    resetFail() {
+        Dispatcher.dispatch({
+            type: ActionTypes.RESET_FAIL,
+        });
+    },
+
     step() {
         Dispatcher.dispatch({
             type: ActionTypes.STEP,
