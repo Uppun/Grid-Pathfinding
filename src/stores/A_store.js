@@ -131,8 +131,10 @@ class A_store extends ReduceStore {
             }
 
             case ActionTypes.GENERATE_FOG: {
-                const {player, end, pathGrid} = state;
+                const {player, end} = state;
+                let {pathGrid} = state;
                 const revealedGrid = mapGenerator(player, end, pathGrid);
+                pathGrid = new Grid(SIZE, SIZE);
                 const seenCells = new Set();
 
                 const {visibleCells} = updateCellSets(seenCells, player, pathGrid, revealedGrid);
